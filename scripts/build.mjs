@@ -213,6 +213,16 @@ pages.set(
   }),
 );
 
+pages.set(
+  "/games/poleline/privacy/",
+  layout({
+    path: "/games/poleline/privacy/",
+    title: "PoleLine Privacy Policy | Toyboxes",
+    description: "How PoleLine by Toyboxes handles local lap records, offline play, device backups and support requests on Android and iOS.",
+    content: `<section class="prose wrap"><h1>PoleLine privacy policy</h1><p class="lead">Your laps stay on your device.</p><p>PoleLine is published by Randroid LLC under the Toyboxes brand. This policy applies to the native Android and iOS apps, package and bundle identifier <code>app.toyboxes.poleline</code>. Updated October 19, 2026.</p><h2>No data collection</h2><p>PoleLine does not collect or transmit personal information, device identifiers, location, gameplay data or diagnostics. It contains no advertising, analytics, tracking, accounts, social features or in-app purchases. The app does not contact a game server.</p><h2>Offline play and local records</h2><p>All circuits and gameplay are included with the app and work offline from the first launch. Lap records, drawn lines, tyre choices, ghost replays and settings are saved on your device. You can delete them using Settings, then Delete all local records. Clearing app storage or uninstalling also removes local progress.</p><h2>Device backups</h2><p>The Android app disables cloud backup and device-to-device transfer of its local game data. On iOS, device backups may include local app data according to your Apple settings. Toyboxes does not operate a cloud-save service or receive your backups.</p><h2>Purchases and external pages</h2><p>The app is a paid download. Store purchases and downloads are handled by Google Play or Apple, under their privacy policies. PoleLine does not receive payment details. If you choose to open this policy or contact support in another app, that browser, email service or store handles the resulting request. The game remains playable without opening any external page.</p><h2>Support</h2><p>If you email <a href="mailto:support@toyboxes.app">support@toyboxes.app</a>, we receive your email address and the information you choose to send, and use them to respond to your request. Do not send passwords or payment details.</p><h2>Children and privacy</h2><p>The same no-collection behaviour applies to every player. PoleLine does not ask for a name, age or contact information.</p><h2>Changes and contact</h2><p>Updates to this policy will appear on this page with a revised date. For privacy questions, contact <a href="mailto:support@toyboxes.app">support@toyboxes.app</a>. See the <a href="/privacy/">Toyboxes website privacy policy</a> for information about this website.</p></section>`,
+  }),
+);
+
 await rm("dist", { recursive: true, force: true });
 await mkdir("dist", { recursive: true });
 await cp("public", "dist", { recursive: true });

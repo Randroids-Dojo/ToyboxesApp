@@ -10,6 +10,7 @@ const routes = [
   "/games/perspective-opus/",
   "/support/",
   "/privacy/",
+  "/games/poleline/privacy/",
 ];
 const load = async (path) => {
   if (!base)
@@ -71,7 +72,7 @@ for (const path of routes) {
     const data = JSON.parse(match[1]);
     assert.equal(data["@context"], "https://schema.org");
     assert(data["@graph"].some((node) => node["@type"] === "Organization"));
-    if (path.startsWith("/games/")) {
+    if (/^\/games\/[^/]+\/$/.test(path)) {
       assert(
         data["@graph"].some(
           (node) =>
