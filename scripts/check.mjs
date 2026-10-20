@@ -11,6 +11,7 @@ const routes = [
   "/support/",
   "/privacy/",
   "/games/poleline/privacy/",
+  "/games/poleline/support/",
 ];
 const load = async (path) => {
   if (!base)
