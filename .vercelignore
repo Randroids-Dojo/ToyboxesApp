@@ -1,2 +1,7 @@
 evidence
 docs
+dist
+node_modules
+.env*
+.git
+.vercel
