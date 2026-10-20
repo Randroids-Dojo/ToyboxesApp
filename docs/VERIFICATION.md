@@ -30,3 +30,7 @@ Verified October 19, 2026 (America/Chicago).
 ## Boundaries
 
 This release publishes the website and domain routing. It does not edit Google Play titles, descriptions, screenshots, developer-profile fields, game binaries or review submissions. It does not verify Search Console ownership/indexing, private acquisition reports, purchase attribution or a search-ranking improvement. See DISCOVERY.md for the remaining console-side steps.
+
+## Console follow-up, October 19, 2026
+
+After the initial website release, domain ownership was verified, Google processed the sitemap, and the homepage and both game pages passed Google's live indexability test. Google accepted manual indexing requests for all three URLs. Both game website links were published and verified in their public Play listings. The developer profile was created and its saved fields verified after reload; public propagation was still pending. See `DISCOVERY.md` for the current status and remaining measurement work. Local console screenshots are in the ignored `evidence/seo-console/` directory.
