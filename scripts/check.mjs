@@ -8,6 +8,7 @@ const routes = [
   "/",
   "/games/jokers-run/",
   "/games/perspective-opus/",
+  "/games/keepsies/",
   "/support/",
   "/privacy/",
   "/games/poleline/privacy/",
@@ -78,7 +79,9 @@ for (const path of routes) {
         data["@graph"].some(
           (node) =>
             node["@type"]?.includes("VideoGame") &&
-            node.operatingSystem === "Android",
+            (node.operatingSystem === "Android" ||
+              (node["@type"].includes("WebApplication") &&
+                node.isAccessibleForFree === true)),
         ),
       );
     }

@@ -144,7 +144,89 @@ export const games = [
       ],
     ],
   },
+  {
+    slug: "keepsies",
+    name: "Keepsies",
+    platform: "web",
+    url: "https://keepsies-game.vercel.app/",
+    genre: "Collectible card game",
+    title: "Keepsies: Collect & Battle, a Free Card Game in Your Browser | Toyboxes",
+    description:
+      "Open packs of one-of-a-kind baby animal cards, put three on the line against a friend and play for keeps. Free in your phone’s browser. No ads, nothing for sale.",
+    hook: "Play for keeps.",
+    summary:
+      "Open packs of one-of-a-kind animal cards. Put three on the line against a friend. Win, and take one of theirs.",
+    intro:
+      "Keepsies: Collect & Battle is a card game you play in your phone’s browser. Open packs of baby animal cards, each one a numbered copy that remembers everyone who held it. Pick three cards and their order, challenge a friend, and whoever loses gives up one of their three, picked blind.",
+    icon: "icon-512.png",
+    cover: "open-packs",
+    coverAlt:
+      "Three phone screens from Keepsies: the first pack waiting to be opened, a rare Cheetah Cub turned over as the last card, and a summary of the ten cards pulled.",
+    browser: "https://keepsies-game.vercel.app/",
+    privacy: "https://keepsies-game.vercel.app/terms/privacy",
+    controls:
+      "Portrait touch controls in any recent phone browser. No download. Start as a guest, then add your phone number to keep your cards and play friends.",
+    facts: ["Free to play", "Play friends", "In your browser"],
+    features: [
+      [
+        "Open packs",
+        "Swipe a foil pack open and turn over ten cards, rarest last. Every card is a numbered copy from a fixed print run, so no two are the same.",
+      ],
+      [
+        "Put three on the line",
+        "Choose three cards and their order under a power cap, then challenge a friend. Colors beat each other like rock, paper and scissors, and a well-placed cheap card can win a match.",
+      ],
+      [
+        "Play for keeps",
+        "Lose a match and the winner takes one of your three cards, blind. Winners wear down and losers bounce back, so no card stays on top for long.",
+      ],
+    ],
+    shots: [
+      [
+        "open-packs",
+        "Open your first packs",
+        "One tap starts the tutorial. No sign-up to play.",
+        "The Keepsies landing screen, a card being revealed from a pack, and the pack summary.",
+      ],
+      [
+        "beat-the-bot",
+        "Beat the practice bot",
+        "Set your lineup, then watch the match play out round by round.",
+        "Choosing three cards under a cap, a round where Blue beats Red, and the win screen.",
+      ],
+      [
+        "keep-your-cards",
+        "Keep what you win",
+        "Your catalog fills up as you collect. Save your cards to play friends.",
+        "The catalog of cards found so far, a won round, and the reward pack with the save your cards panel.",
+      ],
+    ],
+    faqs: [
+      [
+        "Is Keepsies free?",
+        "Yes. Keepsies is free to play in your browser, with no ads, and nothing in it is for sale. Free packs arrive every 12 hours.",
+      ],
+      [
+        "Do I need an account?",
+        "No. You can open packs and beat the practice bot as a guest. To keep your cards and challenge friends, verify a phone number once. After that you sign in with a passkey or Google.",
+      ],
+      [
+        "Is it finished?",
+        "Keepsies is in alpha, so expect bugs and changes while it grows. Every card keeps its history through updates.",
+      ],
+    ],
+  },
 ];
+
+/** A browser game's link, tagged like the Play links so visits can be traced to this site. */
+export function webUrl(game, placement) {
+  const url = new URL(game.url);
+  url.searchParams.set("utm_source", "toyboxes.app");
+  url.searchParams.set("utm_medium", "website");
+  url.searchParams.set("utm_campaign", "web_storefront");
+  url.searchParams.set("utm_content", `${game.slug}_${placement}`);
+  return url.href;
+}
 
 export function playUrl(game, placement) {
   const url = new URL("https://play.google.com/store/apps/details");

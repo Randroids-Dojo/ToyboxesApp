@@ -35,3 +35,17 @@ Images come from `PerspectiveOpusAndroid/docs/store/`, matching the released nat
 | phone-04-finale-stage.png | fb030a6a2b0d00306d1a3c149f329647808d06e9dd16bf9d33a7d2b18100e2da |
 
 Full images are encoded as WebP at quality 86. The `-960.webp` images for both games are 960-pixel-wide derivatives at quality 82, produced with `cwebp`. Their composition and content are unchanged. Captions and alt text describe the displayed scene.
+
+## Keepsies
+
+The app icon is `web/public/icons/icon-512.png` from `Randroids-Dojo/Keepsies`. The three images are real captures of the Keepsies QA build (https://keepsies-qa.vercel.app, commit `8f4b064`) taken on November 10, 2026 with Playwright Chromium at a 390x844 phone viewport and device scale 2, as a new guest playing the tutorial. WebGL was turned off for the capture, so packs open with the game's lightweight reveal rather than the 3D one.
+
+Keepsies is a portrait game, so each 1920x1080 image places three unaltered captures side by side, scaled to 960 pixels high with rounded corners and a soft shadow, on a plain dark background in the game's colors. No phone frame is drawn and the game UI is not edited.
+
+| Local filename | Captures, left to right |
+| --- | --- |
+| open-packs.webp | the landing screen; the last card of a pack turned over (Cheetah Cub); the pack summary |
+| beat-the-bot.webp | the lineup builder; a coached round where Blue beats Red; the win screen |
+| keep-your-cards.webp | the catalog; a won round; the reward pack and the save your cards panel |
+
+Full images are WebP at quality 86 and the `-960.webp` images are 960-pixel-wide derivatives at quality 82, made with Pillow.

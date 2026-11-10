@@ -1,5 +1,7 @@
 import { cp, mkdir, rm, writeFile } from "node:fs/promises";
-import { games, site, developer, playUrl } from "../src/games.mjs";
+import { games, site, developer, playUrl, webUrl } from "../src/games.mjs";
+
+const isWeb = (g) => g.platform === "web";
 
 const esc = (value) =>
   String(value).replace(
@@ -20,7 +22,9 @@ const photo = (
 ) =>
   `<img src="${asset(g, `${file}-960.webp`)}" srcset="${asset(g, `${file}-960.webp`)} 960w, ${asset(g, `${file}.webp`)} 1920w" sizes="${sizes}" width="1920" height="1080" alt="${esc(alt)}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
 const play = (g, placement) =>
-  `<a class="play-link" href="${esc(playUrl(g, placement))}" aria-label="Get ${esc(g.name)} on Google Play"><img src="/assets/google-play-badge.png" width="646" height="250" alt="Get it on Google Play"></a>`;
+  isWeb(g)
+    ? `<a class="button web-play" href="${esc(webUrl(g, placement))}">Play in your browser</a>`
+    : `<a class="play-link" href="${esc(playUrl(g, placement))}" aria-label="Get ${esc(g.name)} on Google Play"><img src="/assets/google-play-badge.png" width="646" height="250" alt="Get it on Google Play"></a>`;
 const organization = {
   "@type": "Organization",
   "@id": `${site}/#organization`,
@@ -31,7 +35,24 @@ const organization = {
   email: "support@toyboxes.app",
   sameAs: [developer, "https://toyboxes.games/"],
 };
-const gameSchema = (g) => ({
+const gameSchema = (g) => isWeb(g) ? ({
+  "@type": ["VideoGame", "WebApplication"],
+  "@id": `${site}${gamePath(g)}#game`,
+  name: g.name,
+  url: `${site}${gamePath(g)}`,
+  description: g.intro,
+  image: `${site}${asset(g, `${g.cover}.webp`)}`,
+  screenshot: g.shots.map(([f]) => `${site}${asset(g, `${f}.webp`)}`),
+  operatingSystem: "Any",
+  browserRequirements: "A recent phone browser with JavaScript",
+  applicationCategory: "GameApplication",
+  genre: g.genre,
+  playMode: "MultiPlayer",
+  isAccessibleForFree: true,
+  inLanguage: "en",
+  publisher: { "@id": organization["@id"] },
+  sameAs: [g.url],
+}) : ({
   "@type": ["VideoGame", "MobileApplication"],
   "@id": `${site}${gamePath(g)}#game`,
   name: g.name,
@@ -117,9 +138,9 @@ pages.set(
   "/",
   layout({
     path: "/",
-    title: "Toyboxes | Original Android Games. No Ads. Just Play.",
+    title: "Toyboxes | Original Games. No Ads. Just Play.",
     description:
-      "Discover Toyboxes games for Android: Joker’s Run arcade air combat and Perspective Opus, a musical 2D/3D puzzle platformer. Buy once, play offline. No ads or in-app purchases.",
+      "Discover Toyboxes games: Joker’s Run arcade air combat and Perspective Opus, a musical 2D/3D puzzle platformer, for Android, and Keepsies, a free card game in your browser. No ads.",
     schema: [
       {
         "@type": "WebSite",
@@ -130,7 +151,7 @@ pages.set(
       },
       {
         "@type": "ItemList",
-        name: "Toyboxes Android games",
+        name: "Toyboxes games",
         itemListElement: games.map((g, i) => ({
           "@type": "ListItem",
           position: i + 1,
@@ -139,9 +160,9 @@ pages.set(
         })),
       },
     ],
-    content: `<section class="home-intro wrap"><div><h1>Little worlds.<br>Big adventures.</h1><p class="intro-copy">Original Android games from Toyboxes.<br>Chase the ace or change your perspective.</p></div><div class="play-promise"><img src="/favicon.svg" width="92" height="92" alt=""><p>Buy once.<br> Play offline.</p><span>No ads. No in-app purchases.</span></div></section>
-  <section class="games-section wrap" id="games" aria-labelledby="games-heading"><div class="section-heading"><h2 id="games-heading">Open a little world.</h2><span>Available on Google Play</span></div><div class="game-grid">${games.map(card).join("")}</div></section>
-  <section class="about-strip wrap" aria-labelledby="about-heading"><div><h2 id="about-heading">Made for the love of play.</h2><p>Toyboxes is an independent game label from Randroid LLC. We make small games with a clear idea at their heart: a flight worth mastering, a puzzle worth seeing differently.</p></div><p>Both Android games are paid downloads. After installation, play offline, without ads, in-app purchases or an account.</p></section>
+    content: `<section class="home-intro wrap"><div><h1>Little worlds.<br>Big adventures.</h1><p class="intro-copy">Original games from Toyboxes.<br>Chase the ace, change your perspective or play for keeps.</p></div><div class="play-promise"><img src="/favicon.svg" width="92" height="92" alt=""><p>Buy once.<br> Play offline.</p><span>No ads. No in-app purchases.</span></div></section>
+  <section class="games-section wrap" id="games" aria-labelledby="games-heading"><div class="section-heading"><h2 id="games-heading">Open a little world.</h2><span>On Google Play and in your browser</span></div><div class="game-grid">${games.map(card).join("")}</div></section>
+  <section class="about-strip wrap" aria-labelledby="about-heading"><div><h2 id="about-heading">Made for the love of play.</h2><p>Toyboxes is an independent game label from Randroid LLC. We make small games with a clear idea at their heart: a flight worth mastering, a puzzle worth seeing differently.</p></div><p>Our Android games are paid downloads: after installation, play offline, without ads, in-app purchases or an account. Keepsies is free in your browser, with nothing for sale.</p></section>
   <aside class="town-strip wrap"><div><h2>There’s a whole town, too.</h2><p>Walk around, ride a go-kart and discover browser games in the Toyboxes town.</p></div><a class="button secondary" href="https://toyboxes.games/">Visit toyboxes.games</a></aside>`,
   }),
 );
@@ -181,12 +202,12 @@ for (const g of games) {
         },
       ],
       content: `<div class="wrap"><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Our games</a><span aria-hidden="true">/</span><span aria-current="page">${esc(g.name)}</span></nav></div>
-    <section class="game-hero wrap"><div class="game-hero-copy"><div class="genre-row"><img class="app-icon" src="${asset(g, g.icon)}" width="64" height="64" alt=""><p>${esc(g.genre)}<br><span>For Android</span></p></div><h1>${esc(g.name)}</h1><p class="game-hook">${esc(g.hook)}</p><p>${esc(g.intro)}</p>${play(g, "hero")}<p class="purchase-note">Paid download. No ads or in-app purchases.</p></div><figure class="hero-gameplay">${photo(g, g.cover, g.coverAlt, { eager: true, sizes: "(min-width: 850px) 680px, 100vw" })}<figcaption>${g.slug === "jokers-run" ? "Lock on. Close the distance. Keep the fleet safe." : "A little note in a world waiting to be heard."}</figcaption></figure></section>
-    <div class="game-facts wrap"><ul>${g.facts.map((f) => `<li>${esc(f)}</li>`).join("")}</ul><a href="${g.browser}">Try the browser version</a></div>
+    <section class="game-hero wrap"><div class="game-hero-copy"><div class="genre-row"><img class="app-icon" src="${asset(g, g.icon)}" width="64" height="64" alt=""><p>${esc(g.genre)}<br><span>${isWeb(g) ? "In your browser" : "For Android"}</span></p></div><h1>${esc(g.name)}</h1><p class="game-hook">${esc(g.hook)}</p><p>${esc(g.intro)}</p>${play(g, "hero")}<p class="purchase-note">${isWeb(g) ? "Free to play. No ads, nothing for sale." : "Paid download. No ads or in-app purchases."}</p></div><figure class="hero-gameplay">${photo(g, g.cover, g.coverAlt, { eager: true, sizes: "(min-width: 850px) 680px, 100vw" })}<figcaption>${g.slug === "jokers-run" ? "Lock on. Close the distance. Keep the fleet safe." : g.slug === "keepsies" ? "Open a pack. Every card is one of a kind." : "A little note in a world waiting to be heard."}</figcaption></figure></section>
+    <div class="game-facts wrap"><ul>${g.facts.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>${isWeb(g) ? "" : `<a href="${g.browser}">Try the browser version</a>`}</div>
     ${g.slug === "perspective-opus" ? perspectiveDemo(g) : ""}
     <section class="features wrap" aria-label="Inside ${esc(g.name)}">${g.features.map(([title, copy]) => `<div><h2>${esc(title)}</h2><p>${esc(copy)}</p></div>`).join("")}</section>
     <section class="gallery-section wrap" aria-labelledby="screenshots-heading"><div class="section-heading"><h2 id="screenshots-heading">A look inside ${esc(g.name)}.</h2><span>Gameplay screenshots</span></div><div class="screenshot-grid">${g.shots.map(([f, title, copy, alt]) => `<figure><a href="${asset(g, `${f}.webp`)}" aria-label="View full screenshot: ${esc(title)}">${photo(g, f, alt, { sizes: "(min-width: 850px) 380px, 100vw" })}</a><figcaption><h3>${esc(title)}</h3><p>${esc(copy)}</p></figcaption></figure>`).join("")}</div></section>
-    <section class="details-section wrap"><div><h2>Ready when you are.</h2><p>${esc(g.controls)}</p><p>Google Play has the current price and device availability for your region.</p>${play(g, "details")}<div class="support-links"><a href="mailto:support@toyboxes.app?subject=${encodeURIComponent(`${g.name} support`)}">Game support</a><a href="${g.privacy}">${esc(g.name)} privacy policy</a></div></div><div class="faq"><h2>Before you play</h2>${g.faqs.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}</div></section>
+    <section class="details-section wrap"><div><h2>Ready when you are.</h2><p>${esc(g.controls)}</p><p>${isWeb(g) ? "Free in any recent phone browser. It is in alpha, so expect changes as it grows." : "Google Play has the current price and device availability for your region."}</p>${play(g, "details")}<div class="support-links"><a href="mailto:support@toyboxes.app?subject=${encodeURIComponent(`${g.name} support`)}">Game support</a><a href="${g.privacy}">${esc(g.name)} privacy policy</a></div></div><div class="faq"><h2>Before you play</h2>${g.faqs.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}</div></section>
     <aside class="other-game wrap"><div><p>Another little world to explore</p><h2><a href="${gamePath(other)}">${esc(other.name)}</a></h2><p>${esc(other.genre)}</p></div><a class="button secondary" href="${gamePath(other)}">Meet ${esc(other.name)}</a></aside>`,
     }),
   );

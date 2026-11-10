@@ -383,6 +383,22 @@ main:focus {
   background: var(--ink);
   color: white;
 }
+/* A browser game's play button, in place of the Google Play badge. */
+.web-play {
+  background: var(--yellow);
+  color: var(--ink);
+  border-color: var(--ink);
+  box-shadow: 0 3px 0 var(--ink);
+}
+.web-play:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: white;
+}
+.game-hero-copy > .web-play,
+.details-section .web-play {
+  margin-top: 24px;
+}
 .site-footer {
   display: flex;
   justify-content: space-between;
