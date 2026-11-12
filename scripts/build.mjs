@@ -1,7 +1,5 @@
 import { cp, mkdir, rm, writeFile } from "node:fs/promises";
-import { games, site, developer, playUrl, webUrl } from "../src/games.mjs";
-
-const isWeb = (g) => g.platform === "web";
+import { games, keepsies, site, developer, playUrl } from "../src/games.mjs";
 
 const esc = (value) =>
   String(value).replace(
@@ -22,9 +20,51 @@ const photo = (
 ) =>
   `<img src="${asset(g, `${file}-960.webp`)}" srcset="${asset(g, `${file}-960.webp`)} 960w, ${asset(g, `${file}.webp`)} 1920w" sizes="${sizes}" width="1920" height="1080" alt="${esc(alt)}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
 const play = (g, placement) =>
-  isWeb(g)
-    ? `<a class="button web-play" href="${esc(webUrl(g, placement))}">Play in your browser</a>`
-    : `<a class="play-link" href="${esc(playUrl(g, placement))}" aria-label="Get ${esc(g.name)} on Google Play"><img src="/assets/google-play-badge.png" width="646" height="250" alt="Get it on Google Play"></a>`;
+  `<a class="play-link" href="${esc(playUrl(g, placement))}" aria-label="Get ${esc(g.name)} on Google Play"><img src="/assets/google-play-badge.png" width="646" height="250" alt="Get it on Google Play"></a>`;
+/* Keepsies: coming soon, so its pages lead to the waitlist and never to the game. */
+const K = keepsies;
+const kPath = gamePath(K);
+const kAsset = (name) => `/assets/keepsies/${name}`;
+const waitlistAction = "/api/waitlist/";
+const waitlistPrivacy = `${kPath}waitlist-privacy/`;
+/** A real phone capture from the game, 600 wide with a 300 wide variant. */
+const phoneShot = (file, alt) =>
+  `<img src="${kAsset(`${file}-300.webp`)}" srcset="${kAsset(`${file}-300.webp`)} 300w, ${kAsset(`${file}.webp`)} 600w" sizes="(min-width: 760px) 250px, 44vw" width="600" height="1298" alt="${esc(alt)}" loading="lazy" decoding="async">`;
+/** Real card faces fanned out of the sealed pack. Pure CSS motion, all visible without JavaScript. */
+const cardFan = ({ eager = false } = {}) =>
+  `<div class="k-stage">${K.fan.map(([file, alt], i) => `<img class="k-card k-card-${i + 1}" src="${kAsset(`${file}.webp`)}" width="360" height="504" alt="${esc(alt)}" ${eager ? "" : 'loading="lazy" '}decoding="async">`).join("")}<img class="k-pack" src="${kAsset("sealed-pack-art.webp")}" width="400" height="622" alt="A sealed Keepsies pack in purple foil with a gold paw print." ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async"></div>`;
+/** The waitlist form. A plain POST that works without JavaScript; site.js submits it in place when it can. */
+const waitlistForm = (placement, { button = "Join the waitlist" } = {}) =>
+  `<form class="waitlist" action="${waitlistAction}" method="post" data-waitlist>
+      <input type="hidden" name="game" value="keepsies">
+      <div class="waitlist-hp" aria-hidden="true"><label for="website-${placement}">Leave this empty</label><input id="website-${placement}" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+      <label class="waitlist-label" for="email-${placement}">Your email</label>
+      <div class="waitlist-row"><input id="email-${placement}" name="email" type="email" required maxlength="254" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="you@example.com"><button type="submit">${esc(button)}</button></div>
+      <p class="waitlist-note">We’ll email you when Keepsies opens. That’s the only email we send. <a href="${waitlistPrivacy}">Waitlist privacy</a></p>
+      <p class="waitlist-status" role="status" aria-live="polite" tabindex="-1"></p>
+    </form>`;
+const kFacts = `<ul class="k-facts">${K.facts.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>`;
+const keepsiesBand = () =>
+  `<section class="keepsies-band wrap" id="keepsies" aria-labelledby="keepsies-heading"><div class="k-head"><p class="k-eyebrow"><img src="${kAsset(K.icon)}" width="44" height="44" alt="">Coming soon from Toyboxes</p><h2 id="keepsies-heading"><a href="${kPath}">Keepsies</a></h2><p class="k-hook">${esc(K.hook)}</p></div>${cardFan({ eager: true })}<div class="k-body"><p class="k-lines">Rip open packs of numbered animal cards. Put three on the line against a friend. Win, and take one of theirs.</p>${kFacts}${waitlistForm("home")}<a class="k-inside" href="${kPath}">See what’s inside Keepsies</a></div></section>`;
+const kSchema = {
+  "@type": ["VideoGame", "WebApplication"],
+  "@id": `${site}${kPath}#game`,
+  name: K.fullName,
+  alternateName: K.name,
+  url: `${site}${kPath}`,
+  description: K.description,
+  image: `${site}${kAsset("keepsies-share.jpg")}`,
+  screenshot: K.beats.flatMap(([, , , shots]) => shots.map(([f]) => `${site}${kAsset(`${f}.webp`)}`)),
+  operatingSystem: "Any",
+  applicationCategory: "GameApplication",
+  gamePlatform: "Web browser",
+  genre: K.genre,
+  playMode: "MultiPlayer",
+  isAccessibleForFree: true,
+  inLanguage: "en",
+  publisher: { "@id": `${site}/#organization` },
+};
+
 const organization = {
   "@type": "Organization",
   "@id": `${site}/#organization`,
@@ -35,24 +75,7 @@ const organization = {
   email: "support@toyboxes.app",
   sameAs: [developer, "https://toyboxes.games/"],
 };
-const gameSchema = (g) => isWeb(g) ? ({
-  "@type": ["VideoGame", "WebApplication"],
-  "@id": `${site}${gamePath(g)}#game`,
-  name: g.name,
-  url: `${site}${gamePath(g)}`,
-  description: g.intro,
-  image: `${site}${asset(g, `${g.cover}.webp`)}`,
-  screenshot: g.shots.map(([f]) => `${site}${asset(g, `${f}.webp`)}`),
-  operatingSystem: "Any",
-  browserRequirements: "A recent phone browser with JavaScript",
-  applicationCategory: "GameApplication",
-  genre: g.genre,
-  playMode: "MultiPlayer",
-  isAccessibleForFree: true,
-  inLanguage: "en",
-  publisher: { "@id": organization["@id"] },
-  sameAs: [g.url],
-}) : ({
+const gameSchema = (g) => ({
   "@type": ["VideoGame", "MobileApplication"],
   "@id": `${site}${gamePath(g)}#game`,
   name: g.name,
@@ -138,9 +161,9 @@ pages.set(
   "/",
   layout({
     path: "/",
-    title: "Toyboxes | Original Games. No Ads. Just Play.",
+    title: "Toyboxes | Original Android Games. No Ads. Just Play.",
     description:
-      "Discover Toyboxes games: Joker’s Run arcade air combat and Perspective Opus, a musical 2D/3D puzzle platformer, for Android, and Keepsies, a free card game in your browser. No ads.",
+      "Discover Toyboxes games for Android: Joker’s Run arcade air combat and Perspective Opus, a musical 2D/3D puzzle platformer. Buy once, play offline. No ads or in-app purchases. Keepsies, a card game played for keeps, is coming soon.",
     schema: [
       {
         "@type": "WebSite",
@@ -152,7 +175,7 @@ pages.set(
       {
         "@type": "ItemList",
         name: "Toyboxes games",
-        itemListElement: games.map((g, i) => ({
+        itemListElement: [...games, K].map((g, i) => ({
           "@type": "ListItem",
           position: i + 1,
           url: `${site}${gamePath(g)}`,
@@ -160,9 +183,10 @@ pages.set(
         })),
       },
     ],
-    content: `<section class="home-intro wrap"><div><h1>Little worlds.<br>Big adventures.</h1><p class="intro-copy">Original games from Toyboxes.<br>Chase the ace, change your perspective or play for keeps.</p></div><div class="play-promise"><img src="/favicon.svg" width="92" height="92" alt=""><p>Buy once.<br> Play offline.</p><span>No ads. No in-app purchases.</span></div></section>
-  <section class="games-section wrap" id="games" aria-labelledby="games-heading"><div class="section-heading"><h2 id="games-heading">Open a little world.</h2><span>On Google Play and in your browser</span></div><div class="game-grid">${games.map(card).join("")}</div></section>
-  <section class="about-strip wrap" aria-labelledby="about-heading"><div><h2 id="about-heading">Made for the love of play.</h2><p>Toyboxes is an independent game label from Randroid LLC. We make small games with a clear idea at their heart: a flight worth mastering, a puzzle worth seeing differently.</p></div><p>Our Android games are paid downloads: after installation, play offline, without ads, in-app purchases or an account. Keepsies is free in your browser, with nothing for sale.</p></section>
+    content: `<section class="home-intro wrap"><div><h1>Little worlds.<br>Big adventures.</h1><p class="intro-copy">Original Android games from Toyboxes.<br>Chase the ace or change your perspective.</p></div><div class="play-promise"><img src="/favicon.svg" width="92" height="92" alt=""><p>Buy once.<br> Play offline.</p><span>No ads. No in-app purchases.</span></div></section>
+  ${keepsiesBand()}
+  <section class="games-section wrap" id="games" aria-labelledby="games-heading"><div class="section-heading"><h2 id="games-heading">Open a little world.</h2><span>Available on Google Play</span></div><div class="game-grid">${games.map(card).join("")}</div></section>
+  <section class="about-strip wrap" aria-labelledby="about-heading"><div><h2 id="about-heading">Made for the love of play.</h2><p>Toyboxes is an independent game label from Randroid LLC. We make small games with a clear idea at their heart: a flight worth mastering, a puzzle worth seeing differently.</p></div><p>Both Android games are paid downloads. After installation, play offline, without ads, in-app purchases or an account.</p></section>
   <aside class="town-strip wrap"><div><h2>There’s a whole town, too.</h2><p>Walk around, ride a go-kart and discover browser games in the Toyboxes town.</p></div><a class="button secondary" href="https://toyboxes.games/">Visit toyboxes.games</a></aside>`,
   }),
 );
@@ -202,16 +226,77 @@ for (const g of games) {
         },
       ],
       content: `<div class="wrap"><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Our games</a><span aria-hidden="true">/</span><span aria-current="page">${esc(g.name)}</span></nav></div>
-    <section class="game-hero wrap"><div class="game-hero-copy"><div class="genre-row"><img class="app-icon" src="${asset(g, g.icon)}" width="64" height="64" alt=""><p>${esc(g.genre)}<br><span>${isWeb(g) ? "In your browser" : "For Android"}</span></p></div><h1>${esc(g.name)}</h1><p class="game-hook">${esc(g.hook)}</p><p>${esc(g.intro)}</p>${play(g, "hero")}<p class="purchase-note">${isWeb(g) ? "Free to play. No ads, nothing for sale." : "Paid download. No ads or in-app purchases."}</p></div><figure class="hero-gameplay">${photo(g, g.cover, g.coverAlt, { eager: true, sizes: "(min-width: 850px) 680px, 100vw" })}<figcaption>${g.slug === "jokers-run" ? "Lock on. Close the distance. Keep the fleet safe." : g.slug === "keepsies" ? "Open a pack. Every card is one of a kind." : "A little note in a world waiting to be heard."}</figcaption></figure></section>
-    <div class="game-facts wrap"><ul>${g.facts.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>${isWeb(g) ? "" : `<a href="${g.browser}">Try the browser version</a>`}</div>
+    <section class="game-hero wrap"><div class="game-hero-copy"><div class="genre-row"><img class="app-icon" src="${asset(g, g.icon)}" width="64" height="64" alt=""><p>${esc(g.genre)}<br><span>For Android</span></p></div><h1>${esc(g.name)}</h1><p class="game-hook">${esc(g.hook)}</p><p>${esc(g.intro)}</p>${play(g, "hero")}<p class="purchase-note">Paid download. No ads or in-app purchases.</p></div><figure class="hero-gameplay">${photo(g, g.cover, g.coverAlt, { eager: true, sizes: "(min-width: 850px) 680px, 100vw" })}<figcaption>${g.slug === "jokers-run" ? "Lock on. Close the distance. Keep the fleet safe." : "A little note in a world waiting to be heard."}</figcaption></figure></section>
+    <div class="game-facts wrap"><ul>${g.facts.map((f) => `<li>${esc(f)}</li>`).join("")}</ul><a href="${g.browser}">Try the browser version</a></div>
     ${g.slug === "perspective-opus" ? perspectiveDemo(g) : ""}
     <section class="features wrap" aria-label="Inside ${esc(g.name)}">${g.features.map(([title, copy]) => `<div><h2>${esc(title)}</h2><p>${esc(copy)}</p></div>`).join("")}</section>
     <section class="gallery-section wrap" aria-labelledby="screenshots-heading"><div class="section-heading"><h2 id="screenshots-heading">A look inside ${esc(g.name)}.</h2><span>Gameplay screenshots</span></div><div class="screenshot-grid">${g.shots.map(([f, title, copy, alt]) => `<figure><a href="${asset(g, `${f}.webp`)}" aria-label="View full screenshot: ${esc(title)}">${photo(g, f, alt, { sizes: "(min-width: 850px) 380px, 100vw" })}</a><figcaption><h3>${esc(title)}</h3><p>${esc(copy)}</p></figcaption></figure>`).join("")}</div></section>
-    <section class="details-section wrap"><div><h2>Ready when you are.</h2><p>${esc(g.controls)}</p><p>${isWeb(g) ? "Free in any recent phone browser. It is in alpha, so expect changes as it grows." : "Google Play has the current price and device availability for your region."}</p>${play(g, "details")}<div class="support-links"><a href="mailto:support@toyboxes.app?subject=${encodeURIComponent(`${g.name} support`)}">Game support</a><a href="${g.privacy}">${esc(g.name)} privacy policy</a></div></div><div class="faq"><h2>Before you play</h2>${g.faqs.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}</div></section>
+    <section class="details-section wrap"><div><h2>Ready when you are.</h2><p>${esc(g.controls)}</p><p>Google Play has the current price and device availability for your region.</p>${play(g, "details")}<div class="support-links"><a href="mailto:support@toyboxes.app?subject=${encodeURIComponent(`${g.name} support`)}">Game support</a><a href="${g.privacy}">${esc(g.name)} privacy policy</a></div></div><div class="faq"><h2>Before you play</h2>${g.faqs.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}</div></section>
     <aside class="other-game wrap"><div><p>Another little world to explore</p><h2><a href="${gamePath(other)}">${esc(other.name)}</a></h2><p>${esc(other.genre)}</p></div><a class="button secondary" href="${gamePath(other)}">Meet ${esc(other.name)}</a></aside>`,
     }),
   );
 }
+
+const kBeat = ([id, heading, lines, shots]) =>
+  `<section class="k-beat k-beat-${shots.length}" aria-labelledby="beat-${id}"><div class="k-beat-copy"><h2 id="beat-${id}">${esc(heading)}</h2>${lines.map((l) => `<p>${esc(l)}</p>`).join("")}</div><div class="k-shots">${shots.map(([f, caption, alt]) => `<figure>${phoneShot(f, alt)}<figcaption>${esc(caption)}</figcaption></figure>`).join("")}</div></section>`;
+pages.set(
+  kPath,
+  layout({
+    path: kPath,
+    title: K.title,
+    description: K.description,
+    image: kAsset("keepsies-share.jpg"),
+    bodyClass: "game-page keepsies-page",
+    schema: [
+      kSchema,
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Toyboxes", item: `${site}/` },
+          { "@type": "ListItem", position: 2, name: K.name, item: `${site}${kPath}` },
+        ],
+      },
+    ],
+    content: `<div class="wrap"><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Our games</a><span aria-hidden="true">/</span><span aria-current="page">${esc(K.name)}</span></nav></div>
+    <section class="keepsies-band k-hero wrap" aria-labelledby="keepsies-title"><div class="k-head"><p class="k-eyebrow"><img src="${kAsset(K.icon)}" width="44" height="44" alt="">Coming soon. Free to play in alpha.</p><h1 id="keepsies-title">${esc(K.name)}<span>Collect &amp; Battle</span></h1><p class="k-hook">${esc(K.hook)}</p></div>${cardFan({ eager: true })}<div class="k-body"><p class="k-lines">A card game you play for keeps. Rip open packs of numbered animal cards. Put three on the line against a friend. Win, and take one of theirs.</p>${kFacts}${waitlistForm("hero")}</div></section>
+    <div class="k-beats wrap">${K.beats.map(kBeat).join("")}</div>
+    <section class="details-section wrap"><div class="faq"><h2>Before it opens</h2>${K.faqs.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}</div><div class="k-join"><h2 id="join-heading">Get in on the first print.</h2><p>Join the waitlist and we’ll tell you the moment Keepsies opens.</p>${waitlistForm("footer")}<p class="k-ask">Questions? Email <a href="mailto:support@toyboxes.app?subject=Keepsies">support@toyboxes.app</a>.</p></div></section>
+    <aside class="other-game wrap"><div><p>Something to play right now</p><h2><a href="/#games">Our Android games</a></h2><p>${games.map((g) => esc(g.name)).join(" and ")}</p></div><a class="button secondary" href="/#games">See our games</a></aside>`,
+  }),
+);
+pages.set(
+  waitlistPrivacy,
+  layout({
+    path: waitlistPrivacy,
+    title: "Keepsies Waitlist Privacy | Toyboxes",
+    description:
+      "What the Keepsies waitlist keeps: your email address and the time you joined, used only to tell you when Keepsies opens. Never sold or shared.",
+    content: `<section class="prose wrap"><h1>Keepsies waitlist privacy</h1><p class="lead">One email address. One email.</p><p>The Keepsies waitlist on toyboxes.app is run by Randroid LLC. Updated November 11, 2026.</p><h2>What we keep</h2><p>The email address you enter and the time you joined. Nothing else is stored with it. Signing up again with the same address replaces your entry, so you are only on the list once.</p><h2>Why</h2><p>To email you when Keepsies opens. That is the only email we send from the waitlist. No newsletter, no marketing list.</p><h2>Where it lives</h2><p>Signups are kept in private storage in our Vercel account, the same provider that hosts this website. They are not public, and only Toyboxes can read them. Like any web request, sending the form is processed by Vercel as described in our <a href="/privacy/">website privacy policy</a>.</p><h2>Never sold or shared</h2><p>We do not sell, rent or share waitlist addresses with anyone.</p><h2>How long we keep it</h2><p>We delete the waitlist after we send the launch email. To be removed sooner, email <a href="mailto:support@toyboxes.app?subject=Keepsies%20waitlist">support@toyboxes.app</a> and tell us the address you used.</p><h2>Age</h2><p>Keepsies is for players 13 and older, and so is the waitlist.</p><h2>Contact</h2><p>For privacy questions, email <a href="mailto:support@toyboxes.app">support@toyboxes.app</a>.</p><p><a href="${kPath}">Back to Keepsies</a></p></section>`,
+  }),
+);
+/* Where the form lands without JavaScript. Not indexed and not in the sitemap. */
+const waitlistResults = new Map([
+  [
+    `${kPath}joined/`,
+    layout({
+      path: `${kPath}joined/`,
+      title: "You’re on the Keepsies Waitlist | Toyboxes",
+      description: "You joined the Keepsies waitlist.",
+      noindex: true,
+      content: `<section class="prose wrap k-result"><img src="${kAsset(K.icon)}" width="88" height="88" alt=""><h1>You’re on the list.</h1><p class="lead">We’ll email you when Keepsies opens. That’s the only email we send.</p><p>Changed your mind? Email <a href="mailto:support@toyboxes.app?subject=Keepsies%20waitlist">support@toyboxes.app</a> and we’ll take you off. See <a href="${waitlistPrivacy}">waitlist privacy</a>.</p><p><a class="button" href="${kPath}">Back to Keepsies</a></p></section>`,
+    }),
+  ],
+  [
+    `${kPath}try-again/`,
+    layout({
+      path: `${kPath}try-again/`,
+      title: "Keepsies Waitlist: Try Again | Toyboxes",
+      description: "Your Keepsies waitlist signup did not go through.",
+      noindex: true,
+      content: `<section class="prose wrap k-result"><h1>That didn’t go through.</h1><p class="lead">Check your email address and try again.</p><div class="k-retry">${waitlistForm("retry", { button: "Try again" })}</div><p>If it keeps happening, email <a href="mailto:support@toyboxes.app?subject=Keepsies%20waitlist">support@toyboxes.app</a>.</p><p><a href="${kPath}">Back to Keepsies</a></p></section>`,
+    }),
+  ],
+]);
 
 pages.set(
   "/support/",
@@ -230,7 +315,7 @@ pages.set(
     title: "Toyboxes Website Privacy | toyboxes.app",
     description:
       "How the Toyboxes website handles web requests and support email, plus links to the privacy policies for Joker’s Run and Perspective Opus on Android.",
-    content: `<section class="prose wrap"><h1>Privacy</h1><p class="lead">The Toyboxes website and our Android games.</p><p>This website is published by Randroid LLC. Updated October 19, 2026.</p><h2>This website</h2><p>You can browse toyboxes.app without creating an account. We do not add advertising, analytics scripts or tracking cookies. Our hosting provider, Vercel, processes ordinary web requests, which may include your IP address, browser information and the pages requested, to serve and secure the site.</p><p>Google Play links contain campaign labels identifying this website, the game and the link’s placement. These labels contain no personal identifier. When you follow an external link, that service’s own privacy practices apply.</p><h2>Support email</h2><p>If you email support@toyboxes.app, we receive your email address and the information you choose to send, and use them to respond to your request. Please do not send passwords or payment details.</p><h2>Android game policies</h2><p>The Android games have their own privacy policies. Read the policy for your game:</p><ul>${games.map((g) => `<li><a href="${g.privacy}">${esc(g.name)} privacy policy</a></li>`).join("")}</ul><h2>Contact</h2><p>For privacy questions, email <a href="mailto:support@toyboxes.app">support@toyboxes.app</a>.</p></section>`,
+    content: `<section class="prose wrap"><h1>Privacy</h1><p class="lead">The Toyboxes website and our Android games.</p><p>This website is published by Randroid LLC. Updated November 11, 2026.</p><h2>This website</h2><p>You can browse toyboxes.app without creating an account. We do not add advertising, analytics scripts or tracking cookies. Our hosting provider, Vercel, processes ordinary web requests, which may include your IP address, browser information and the pages requested, to serve and secure the site.</p><p>Google Play links contain campaign labels identifying this website, the game and the link’s placement. These labels contain no personal identifier. When you follow an external link, that service’s own privacy practices apply.</p><h2>Support email</h2><p>If you email support@toyboxes.app, we receive your email address and the information you choose to send, and use them to respond to your request. Please do not send passwords or payment details.</p><h2>Keepsies waitlist</h2><p>If you join the Keepsies waitlist, we keep your email address and the time you joined, privately, to tell you when Keepsies opens. We never sell or share it, and we delete it after the launch email or sooner on request. Read the <a href="${waitlistPrivacy}">Keepsies waitlist privacy note</a>.</p><h2>Android game policies</h2><p>The Android games have their own privacy policies. Read the policy for your game:</p><ul>${games.map((g) => `<li><a href="${g.privacy}">${esc(g.name)} privacy policy</a></li>`).join("")}</ul><h2>Contact</h2><p>For privacy questions, email <a href="mailto:support@toyboxes.app">support@toyboxes.app</a>.</p></section>`,
   }),
 );
 
@@ -258,6 +343,10 @@ await rm("dist", { recursive: true, force: true });
 await mkdir("dist", { recursive: true });
 await cp("public", "dist", { recursive: true });
 for (const [path, html] of pages) {
+  await mkdir(`dist${path}`, { recursive: true });
+  await writeFile(`dist${path}index.html`, html);
+}
+for (const [path, html] of waitlistResults) {
   await mkdir(`dist${path}`, { recursive: true });
   await writeFile(`dist${path}index.html`, html);
 }

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile, access } from "node:fs/promises";
+import { readFile, readdir, access } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const base = process.argv[2];
@@ -9,6 +9,7 @@ const routes = [
   "/games/jokers-run/",
   "/games/perspective-opus/",
   "/games/keepsies/",
+  "/games/keepsies/waitlist-privacy/",
   "/support/",
   "/privacy/",
   "/games/poleline/privacy/",
@@ -149,6 +150,38 @@ if (base) {
   assert.equal(missing.status, 404, "Unknown routes return a real 404");
   assert((await missing.text()).includes("This box is empty."));
 }
+// Keepsies is coming soon: nothing in the build may point at the game itself.
+if (!base) {
+  const banned = ["keepsies-game", "keepsies-qa", "vercel.app/keepsies"];
+  for (const name of await readdir("dist", { recursive: true })) {
+    const file = `dist/${name.replaceAll("\\", "/")}`;
+    if (!/\.(html|js|css|xml|txt|json|svg)$/.test(file)) continue;
+    const text = await readFile(file, "utf8");
+    for (const word of banned)
+      assert(!text.includes(word), `${file} must not link to the game (${word})`);
+  }
+  console.log("PASS no links to the Keepsies game in dist");
+}
+
+// The waitlist form posts to the function, works without JavaScript and lands on real pages.
+for (const path of ["/", "/games/keepsies/", "/games/keepsies/try-again/"]) {
+  const html = await load(path);
+  const forms = html.match(/<form class="waitlist"[\s\S]*?<\/form>/g) || [];
+  assert(forms.length > 0, `${path}: waitlist form`);
+  for (const form of forms) {
+    assert(form.includes('action="/api/waitlist/" method="post"'), `${path}: form posts to /api/waitlist/`);
+    assert(/<input id="email-[a-z]+" name="email" type="email" required[^>]*autocomplete="email"/.test(form), `${path}: required email field`);
+    assert(form.includes('<input type="hidden" name="game" value="keepsies">'), `${path}: game field`);
+    assert(/name="website" type="text" tabindex="-1" autocomplete="off"/.test(form), `${path}: honeypot`);
+    assert(form.includes('href="/games/keepsies/waitlist-privacy/"'), `${path}: privacy link`);
+  }
+}
+for (const path of ["/games/keepsies/joined/", "/games/keepsies/try-again/"]) {
+  const html = await load(path);
+  assert(html.includes('<meta name="robots" content="noindex">'), `${path}: noindex`);
+  assert(!(await load("/sitemap.xml")).includes(path), `${path}: not in the sitemap`);
+}
+console.log("PASS Keepsies waitlist form and result pages");
 console.log(
   `PASS sitemap, robots.txt${base ? `, ${assets.size} live assets and real 404` : ""}.`,
 );

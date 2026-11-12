@@ -383,22 +383,6 @@ main:focus {
   background: var(--ink);
   color: white;
 }
-/* A browser game's play button, in place of the Google Play badge. */
-.web-play {
-  background: var(--yellow);
-  color: var(--ink);
-  border-color: var(--ink);
-  box-shadow: 0 3px 0 var(--ink);
-}
-.web-play:hover {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: white;
-}
-.game-hero-copy > .web-play,
-.details-section .web-play {
-  margin-top: 24px;
-}
 .site-footer {
   display: flex;
   justify-content: space-between;
@@ -1064,6 +1048,425 @@ main:focus {
   .support-links {
     flex-direction: column;
     gap: 12px;
+  }
+}
+/* Keepsies: coming soon. Its own deep violet and gold, inside the storefront's type and shapes. */
+.keepsies-band {
+  --k-deep: #1b0e31;
+  --k-violet: #34186a;
+  --k-gold: #ffd166;
+  --k-text: #f7f1ff;
+  --k-muted: #d6c9f2;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-areas: "head stage" "body stage";
+  column-gap: 40px;
+  align-items: start;
+  margin-bottom: 70px;
+  padding: 44px 48px 40px;
+  border-radius: 28px;
+  color: var(--k-text);
+  background:
+    radial-gradient(120% 90% at 78% 40%, #6a35c2 0%, transparent 62%),
+    linear-gradient(160deg, var(--k-violet) 0%, var(--k-deep) 75%);
+  box-shadow: 9px 9px 0 #ccddec;
+  overflow: hidden;
+  isolation: isolate;
+}
+.keepsies-band::before {
+  /* A faint foil diamond pattern, like the pack. */
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(45deg, #ffffff0a 25%, transparent 25%, transparent 75%, #ffffff0a 75%),
+    linear-gradient(45deg, #ffffff0a 25%, transparent 25%, transparent 75%, #ffffff0a 75%);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
+  mask-image: linear-gradient(90deg, #000 0%, transparent 70%);
+}
+.keepsies-band a {
+  color: inherit;
+}
+.keepsies-band a:hover {
+  color: var(--k-gold);
+}
+.keepsies-band a:focus-visible,
+.keepsies-band button:focus-visible,
+.keepsies-band input:focus-visible {
+  outline-color: var(--k-gold);
+}
+.k-head {
+  grid-area: head;
+  align-self: end;
+}
+.k-body {
+  grid-area: body;
+}
+.k-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 750;
+  font-size: 16px;
+  letter-spacing: 0.4px;
+  color: var(--k-gold);
+}
+.k-eyebrow img {
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
+  box-shadow: 0 0 0 2px #ffd16655;
+}
+.keepsies-band h2,
+.keepsies-band h1 {
+  font-size: clamp(56px, 6.6vw, 92px);
+  line-height: 0.95;
+  letter-spacing: -1px;
+  margin-top: 18px;
+  color: #fff;
+  text-shadow: 0 4px 0 #0d0620;
+}
+.keepsies-band h2 a {
+  text-decoration: none;
+}
+.keepsies-band h1 span {
+  display: block;
+  font-size: 0.32em;
+  letter-spacing: 0.5px;
+  margin-top: 10px;
+  color: var(--k-muted);
+  text-shadow: none;
+}
+.k-hook {
+  font-family: var(--display);
+  font-size: clamp(30px, 3.2vw, 42px);
+  line-height: 1.1;
+  color: var(--k-gold);
+  margin-top: 12px;
+}
+.k-lines {
+  font-size: 20px;
+  line-height: 1.45;
+  color: var(--k-text);
+  margin-top: 18px;
+  max-width: 34ch;
+}
+.k-inside {
+  display: inline-block;
+  margin-top: 4px;
+  font-weight: 700;
+  font-size: 17px;
+}
+.k-inside::after {
+  content: " →";
+}
+.k-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+}
+.k-facts li {
+  font-size: 14px;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 999px;
+  color: var(--k-text);
+  background: #ffffff14;
+  border: 1px solid #ffd16655;
+}
+/* The fan: real card faces rising out of the sealed pack. */
+.k-stage {
+  grid-area: stage;
+  position: relative;
+  align-self: center;
+  justify-self: center;
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 520 / 500;
+}
+.k-card,
+.k-pack {
+  position: absolute;
+  left: 50%;
+  height: auto;
+}
+.k-card {
+  --r: 0deg;
+  --x: 0%;
+  --y: 0%;
+  width: 34%;
+  bottom: 36%;
+  transform-origin: 50% 100%;
+  transform: translateX(-50%) translate(var(--x), var(--y)) rotate(var(--r));
+  border-radius: 6% / 4.3%;
+  box-shadow: 0 14px 26px #0b041c88;
+  animation: k-fan-in 0.9s cubic-bezier(0.2, 0.9, 0.3, 1.15) backwards;
+}
+.k-card-1 { --r: -26deg; --x: -62%; --y: 6%; animation-delay: 0.15s; }
+.k-card-2 { --r: -13deg; --x: -32%; --y: -2%; animation-delay: 0.25s; }
+.k-card-3 { --r: 0deg; --x: 0%; --y: -6%; z-index: 1; }
+.k-card-4 { --r: 13deg; --x: 32%; --y: -2%; animation-delay: 0.45s; }
+.k-card-5 { --r: 26deg; --x: 62%; --y: 6%; animation-delay: 0.55s; }
+.k-card-3 {
+  animation:
+    k-fan-in 0.9s cubic-bezier(0.2, 0.9, 0.3, 1.15) 0.35s backwards,
+    k-float 5s ease-in-out 1.4s infinite;
+}
+.k-pack {
+  z-index: 2;
+  width: 40%;
+  bottom: 0;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 18px 24px #0b041caa);
+}
+@keyframes k-fan-in {
+  from {
+    transform: translateX(-50%) translate(0, 40%) rotate(0deg);
+    opacity: 0;
+  }
+}
+@keyframes k-float {
+  50% {
+    transform: translateX(-50%) translate(var(--x), calc(var(--y) - 4%)) rotate(var(--r));
+  }
+}
+/* The waitlist form */
+.waitlist {
+  margin-top: 26px;
+  max-width: 500px;
+}
+.waitlist-label {
+  display: block;
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+.waitlist-row {
+  display: flex;
+  gap: 10px;
+}
+.waitlist input[type="email"] {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 54px;
+  padding: 12px 16px;
+  font: inherit;
+  font-size: 18px;
+  color: var(--ink);
+  background: var(--white);
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+}
+.waitlist button {
+  flex-shrink: 0;
+  min-height: 54px;
+  padding: 12px 20px;
+  font-weight: 750;
+  font-size: 17px;
+  color: var(--ink);
+  background: var(--yellow);
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  box-shadow: 0 3px 0 var(--ink);
+  cursor: pointer;
+}
+.keepsies-band .waitlist button {
+  background: var(--k-gold);
+  border-color: #0d0620;
+  box-shadow: 0 4px 0 #0d0620;
+}
+.waitlist button:hover,
+.keepsies-band .waitlist button:hover {
+  background: #ffe08f;
+}
+.waitlist button:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--ink);
+}
+.waitlist button[disabled] {
+  cursor: progress;
+  opacity: 0.8;
+}
+.waitlist-status {
+  min-height: 1.5em;
+  margin-top: 8px;
+  font-weight: 700;
+  font-size: 17px;
+}
+.waitlist-status:focus {
+  outline: none;
+}
+.waitlist-status[data-state="ok"] {
+  color: #1d6b41;
+}
+.waitlist-status[data-state="error"] {
+  color: #b3261e;
+}
+.keepsies-band .waitlist-status[data-state="ok"] {
+  color: #9ff0bd;
+}
+.keepsies-band .waitlist-status[data-state="error"] {
+  color: #ffb4a8;
+}
+.waitlist-note {
+  font-size: 15px;
+  color: var(--muted);
+  margin-top: 12px;
+}
+.keepsies-band .waitlist-note {
+  color: var(--k-muted);
+}
+.waitlist-note a {
+  font-weight: 700;
+  white-space: nowrap;
+}
+.waitlist-hp {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+/* The Keepsies page */
+.k-hero {
+  margin-bottom: 30px;
+}
+.k-beats {
+  padding-block: 40px 30px;
+}
+.k-beat {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 50px;
+  align-items: center;
+  padding-block: 45px;
+}
+.k-beat + .k-beat {
+  border-top: 1px solid var(--line);
+}
+.k-beat:nth-child(even) {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+.k-beat:nth-child(even) .k-beat-copy {
+  order: 2;
+}
+.k-beat h2 {
+  font-size: clamp(36px, 4vw, 52px);
+  margin-bottom: 18px;
+}
+.k-beat p {
+  font-size: 20px;
+  color: var(--muted);
+  max-width: 44ch;
+}
+.k-beat p:first-of-type {
+  color: var(--ink);
+  font-weight: 650;
+}
+.k-shots {
+  display: flex;
+  gap: 22px;
+  justify-content: center;
+}
+.k-shots figure {
+  width: 250px;
+}
+.k-shots img {
+  width: 100%;
+  border-radius: 24px;
+  border: 3px solid var(--ink);
+  box-shadow: 8px 8px 0 #ccddec;
+  background: #140a24;
+}
+.k-shots figcaption {
+  font-size: 15px;
+  color: var(--muted);
+  padding-top: 12px;
+  text-align: center;
+}
+.k-join h2 {
+  font-size: 34px;
+  margin-bottom: 14px;
+}
+.k-join .waitlist {
+  margin-top: 18px;
+}
+.k-ask {
+  font-size: 16px;
+  margin-top: 6px;
+}
+.k-result img {
+  border-radius: 20px;
+  margin-bottom: 24px;
+}
+.k-retry .waitlist {
+  margin-block: 10px 26px;
+}
+@media (max-width: 1000px) {
+  .keepsies-band {
+    column-gap: 20px;
+    padding: 36px 32px 34px;
+  }
+  .k-beat {
+    gap: 30px;
+  }
+  .k-shots figure {
+    width: 210px;
+  }
+}
+@media (max-width: 760px) {
+  .keepsies-band {
+    grid-template-columns: 1fr;
+    grid-template-areas: "head" "stage" "body";
+    padding: 28px 22px 26px;
+    border-radius: 22px;
+    margin-bottom: 50px;
+    box-shadow: 6px 6px 0 #ccddec;
+  }
+  .keepsies-band::before {
+    mask-image: linear-gradient(180deg, #000 0%, transparent 60%);
+  }
+  .k-stage {
+    max-width: 320px;
+    margin-top: 14px;
+    margin-bottom: 6px;
+  }
+  .k-lines {
+    font-size: 19px;
+    margin-top: 0;
+  }
+  .waitlist-row {
+    flex-direction: column;
+  }
+  .waitlist button {
+    width: 100%;
+  }
+  .k-beat,
+  .k-beat:nth-child(even) {
+    grid-template-columns: 1fr;
+    gap: 26px;
+    padding-block: 36px;
+  }
+  .k-beat:nth-child(even) .k-beat-copy {
+    order: 0;
+  }
+  .k-beat p {
+    font-size: 18px;
+  }
+  .k-shots {
+    gap: 14px;
+  }
+  .k-shots figure {
+    width: min(250px, calc(50% - 7px));
+  }
+  .k-beat-1 .k-shots figure {
+    width: min(250px, 62%);
   }
 }
 @media (prefers-reduced-motion: reduce) {

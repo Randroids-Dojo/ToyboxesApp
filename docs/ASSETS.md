@@ -38,14 +38,36 @@ Full images are encoded as WebP at quality 86. The `-960.webp` images for both g
 
 ## Keepsies
 
-The app icon is `web/public/icons/icon-512.png` from `Randroids-Dojo/Keepsies`. The three images are real captures of the Keepsies QA build (https://keepsies-qa.vercel.app, commit `8f4b064`) taken on November 10, 2026 with Playwright Chromium at a 390x844 phone viewport and device scale 2, as a new guest playing the tutorial. WebGL was turned off for the capture, so packs open with the game's lightweight reveal rather than the 3D one.
+Keepsies is coming soon, so these images show the game without linking to it. Everything comes from the `Randroids-Dojo/Keepsies` repository or from real captures of its alpha build. No phone frame is drawn and no game UI is edited.
 
-Keepsies is a portrait game, so each 1920x1080 image places three unaltered captures side by side, scaled to 960 pixels high with rounded corners and a soft shadow, on a plain dark background in the game's colors. No phone frame is drawn and the game UI is not edited.
+The app icon is `web/public/icons/icon-512.png`.
 
-| Local filename | Captures, left to right |
+### Card faces and the sealed pack
+
+The fanned cards on the home page and the Keepsies page are the game's own rendered card faces from `web/public/pack3d/faces/` (the images its pack opening uses, built from each card's design), resized from 600x840 to 360x504 WebP at quality 78. The sealed pack is `web/public/pack/sealed-49019165-960.webp`, resized to 400 pixels wide at quality 80.
+
+| Local filename | Source face | Card |
+| --- | --- | --- |
+| card-red-panda-cub.webp | 024-81720c48.webp | Red Panda Cub, red rare |
+| card-axolotl-scene.webp | 117-55d0c6ff.webp | Axolotl scene rare (secret rare) |
+| card-lion-cub-full-art.webp | 110-eadaeaad.webp | Lion Cub full art (secret rare) |
+| card-snow-leopard-cub.webp | 099-3bb30f62.webp | Snow Leopard Cub, blue ultra rare |
+| card-panda-cub.webp | 097-f7a58bf8.webp | Panda Cub, blue ultra rare |
+| sealed-pack-art.webp | sealed-49019165-960.webp | The sealed pack |
+
+`keepsies-share.jpg` (1200x630, the social preview) arranges the same five card faces and the pack on a plain violet background. It adds no text or invented art.
+
+### Gameplay captures
+
+Captured on November 11, 2026 (America/Chicago) from the Keepsies QA build, main `5f6f9d2`, with Playwright Chromium at a 390x844 phone viewport, device scale 2, using a fresh debug test account. Packs were opened with the game's lightweight reveal (the 3D opening was not used). Each capture is a whole, unedited phone screen, resized to 600x1298 and 300x649 WebP at quality 78. The test account's name ("Tester 3719") appears where the game shows who pulled a card.
+
+| Local filename | What it shows |
 | --- | --- |
-| open-packs.webp | the landing screen; the last card of a pack turned over (Cheetah Cub); the pack summary |
-| beat-the-bot.webp | the lineup builder; a coached round where Blue beats Red; the win screen |
-| keep-your-cards.webp | the catalog; a won round; the reward pack and the save your cards panel |
-
-Full images are WebP at quality 86 and the `-960.webp` images are 960-pixel-wide derivatives at quality 82, made with Pillow.
+| sealed-pack.webp | A sealed pack before opening, with the swipe hint |
+| last-card.webp | The tenth card of the pack turned over: Peacock, a blue rare |
+| card-close-up.webp | The Peacock copy up close: number 093 of 100, serial No. 5 of 21, strength meter at Fresh |
+| card-story.webp | The same copy's details: serial, first print, owner, who pulled it and its story so far |
+| binder.webp | The catalog binder: 34 of 100 collected, 0 of 20 secret rares, first page |
+| lineup.webp | The practice bot lineup with Pygmy Hippo Calf, Cheetah Cub and Pallas's Cat in rounds 1 to 3 |
+| color-defense.webp | Round 1 against the practice bot: Red beats Yellow, the coached color defense explainer |
+| pick-one.webp | Pick your prize: the practice bot's three cards face down after the tutorial win |

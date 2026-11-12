@@ -11,3 +11,5 @@ Layout: a left-aligned, two-line headline introduces two large gameplay-led game
 Review against the brief: use the established Toyboxes icon and type instead of an unrelated studio identity. Use real captures instead of invented box art or device mockups. Keep purchase links close to genre descriptions. Put the town behind a normal link and keep its project separate. No autoplay video, loading gate or client-rendered catalog.
 
 The Perspective Opus comparison starts with both screenshots in HTML; a small script adds two accessible view buttons. Removing JavaScript leaves the full information visible.
+
+Keepsies is coming soon and has no public link yet. The home page gives it one violet and gold band under the introduction: its real card faces fanned out of the sealed pack, a short hook and the waitlist form. Its own page tells the game in short beats, each beside real phone captures, and repeats the form at the end. The card fan rises once on load and the center card floats gently; both stop under reduced motion, and everything is plain HTML and CSS without JavaScript.
