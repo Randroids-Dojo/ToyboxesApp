@@ -35,3 +35,39 @@ Images come from `PerspectiveOpusAndroid/docs/store/`, matching the released nat
 | phone-04-finale-stage.png | fb030a6a2b0d00306d1a3c149f329647808d06e9dd16bf9d33a7d2b18100e2da |
 
 Full images are encoded as WebP at quality 86. The `-960.webp` images for both games are 960-pixel-wide derivatives at quality 82, produced with `cwebp`. Their composition and content are unchanged. Captions and alt text describe the displayed scene.
+
+## Keepsies
+
+Keepsies is coming soon, so these images show the game without linking to it. Everything comes from the `Randroids-Dojo/Keepsies` repository or from real captures of its alpha build. No phone frame is drawn and no game UI is edited.
+
+The app icon is `web/public/icons/icon-512.png`.
+
+### Card faces and the sealed pack
+
+The fanned cards on the home page and the Keepsies page are the game's own rendered card faces from `web/public/pack3d/faces/` (the images its pack opening uses, built from each card's design), resized from 600x840 to 360x504 WebP at quality 78. The sealed pack is `web/public/pack/sealed-49019165-960.webp`, resized to 400 pixels wide at quality 80.
+
+| Local filename | Source face | Card |
+| --- | --- | --- |
+| card-red-panda-cub.webp | 024-81720c48.webp | Red Panda Cub, red rare |
+| card-axolotl-scene.webp | 117-55d0c6ff.webp | Axolotl scene rare (secret rare) |
+| card-lion-cub-full-art.webp | 110-eadaeaad.webp | Lion Cub full art (secret rare) |
+| card-snow-leopard-cub.webp | 099-3bb30f62.webp | Snow Leopard Cub, blue ultra rare |
+| card-panda-cub.webp | 097-f7a58bf8.webp | Panda Cub, blue ultra rare |
+| sealed-pack-art.webp | sealed-49019165-960.webp | The sealed pack |
+
+`keepsies-share.jpg` (1200x630, the social preview) arranges the same five card faces and the pack on a plain violet background. It adds no text or invented art.
+
+### Gameplay captures
+
+Captured on November 11, 2026 (America/Chicago) from the Keepsies QA build, main `5f6f9d2`, with Playwright Chromium at a 390x844 phone viewport, device scale 2, using a fresh debug test account. Packs were opened with the game's lightweight reveal (the 3D opening was not used). Each capture is a whole, unedited phone screen, resized to 600x1298 and 300x649 WebP at quality 78. The test account's name ("Tester 3719") appears where the game shows who pulled a card.
+
+| Local filename | What it shows |
+| --- | --- |
+| sealed-pack.webp | A sealed pack before opening, with the swipe hint |
+| last-card.webp | The tenth card of the pack turned over: Peacock, a blue rare |
+| card-close-up.webp | The Peacock copy up close: number 093 of 100, serial No. 5 of 21, strength meter at Fresh |
+| card-story.webp | The same copy's details: serial, first print, owner, who pulled it and its story so far |
+| binder.webp | The catalog binder: 34 of 100 collected, 0 of 20 secret rares, first page |
+| lineup.webp | The practice bot lineup with Pygmy Hippo Calf, Cheetah Cub and Pallas's Cat in rounds 1 to 3 |
+| color-defense.webp | Round 1 against the practice bot: Red beats Yellow, the coached color defense explainer |
+| pick-one.webp | Pick your prize: the practice bot's three cards face down after the tutorial win |

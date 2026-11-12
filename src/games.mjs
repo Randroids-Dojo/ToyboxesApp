@@ -160,3 +160,106 @@ export function playUrl(game, placement) {
   );
   return url.href;
 }
+
+/**
+ * Keepsies is coming soon. It has its own page and a waitlist, and no link to
+ * the game itself until it opens to everyone. Facts come from the game's own
+ * design docs and the current alpha build. No em or en dashes in this copy.
+ */
+export const keepsies = {
+  slug: "keepsies",
+  name: "Keepsies",
+  fullName: "Keepsies: Collect & Battle",
+  genre: "Collectible card game",
+  title: "Keepsies: A Card Game Played for Keeps, Coming Soon | Toyboxes",
+  description:
+    "Rip open packs of numbered animal cards, put three on the line against a friend and take one of theirs for keeps. Keepsies is coming soon. Join the waitlist.",
+  hook: "Play for keeps.",
+  icon: "icon-512.png",
+  // Real card faces from the game, fanned out of the sealed pack. [file, alt]
+  fan: [
+    ["card-red-panda-cub", "Red Panda Cub, a red rare card with power 58."],
+    ["card-axolotl-scene", "Axolotl scene rare, a red secret rare card with power 76."],
+    ["card-lion-cub-full-art", "Lion Cub full art, a yellow secret rare card with power 84."],
+    ["card-snow-leopard-cub", "Snow Leopard Cub, a blue ultra rare card with power 85."],
+    ["card-panda-cub", "Panda Cub, a blue ultra rare card with power 79."],
+  ],
+  facts: ["Free in alpha", "100 animals plus 20 secret rares", "Made for your phone"],
+  // Trailer beats for the game page: [id, heading, lines, shots [file, caption, alt]]
+  beats: [
+    [
+      "rip",
+      "Rip it open.",
+      [
+        "Ten cards a pack. Rarest last.",
+        "Swipe the seal and turn them over one by one. The last card waits face down until you flip it.",
+      ],
+      [
+        ["sealed-pack", "A sealed pack, ready to open.", "A sealed purple and gold Keepsies pack with the hint: swipe across the top to open, or tap the pack."],
+        ["last-card", "The last card: a Peacock, rare.", "A Peacock card, a blue rare with power 66, turned over as the last card of the pack."],
+      ],
+    ],
+    [
+      "copy",
+      "No two cards are the same.",
+      [
+        "Every pack comes from a limited, numbered print run. Exactly as many copies of each card exist as were printed.",
+        "So every card you pull is a real copy, with its own serial number and its own story. Who pulled it. Every match it fought. Every hand it passed through.",
+      ],
+      [
+        ["card-close-up", "Serial No. 5 of 21, first print.", "A close-up of the Peacock card, labeled number 093 of 100, serial number 5 of 21, with a strength meter reading Fresh."],
+        ["card-story", "This copy and its story.", "The card's details: serial number 5 of 21, first print, the owner, who pulled it and its story so far."],
+      ],
+    ],
+    [
+      "binder",
+      "Fill the binder.",
+      [
+        "100 animals in set 1, plus 20 secret rares.",
+        "A hoglet, a barn owlet, a kangaroo joey: cards use the real word for a young animal wherever there is one, and every card carries a real fact. Drawn in Arcade-Cel style, part 1990s action cartoon, part 16-bit arcade.",
+        "Every slot starts as a silhouette. Flip the pages and watch it fill.",
+      ],
+      [["binder", "Your binder, page by page.", "The catalog binder: 34 of 100 collected, with collected cards in their pockets and the rest as numbered silhouettes."]],
+    ],
+    [
+      "battle",
+      "Three cards. Three rounds. Your order.",
+      [
+        "Pick three cards and the round each one fights in, under a power cap.",
+        "Red beats Yellow. Yellow beats Blue. Blue beats Red. Get beaten on color and your card loses some of its strength.",
+        "Win a round and your card gets a little weaker. Lose one and it comes back a little stronger. No card stays on top for long.",
+      ],
+      [
+        ["lineup", "Set your lineup.", "The lineup screen against the practice bot, with Pygmy Hippo Calf, Cheetah Cub and Pallas's Cat placed in rounds 1, 2 and 3."],
+        ["color-defense", "Color defense: Red beats Yellow.", "A round in progress: Red beats Yellow, so the bot's card loses a share of its strength and drops to 60 against Pygmy Hippo Calf's 61."],
+      ],
+    ],
+    [
+      "keeps",
+      "Winner picks one. For keeps.",
+      [
+        "Challenge a friend. Lineups stay hidden until the replay.",
+        "Whoever loses shuffles their three cards face down, and the winner takes one, blind. That card is theirs now, and its story goes with it.",
+      ],
+      [["pick-one", "The face-down pick, from the practice bot.", "Pick your prize: the practice bot's three cards shuffled face down, waiting for a tap."]],
+    ],
+  ],
+  faqs: [
+    [
+      "When does Keepsies open?",
+      "There is no date yet. Keepsies is in alpha and changing fast. Join the waitlist and we will email you when it opens.",
+    ],
+    [
+      "Is it free?",
+      "Yes. Keepsies is free to play in alpha, with a free pack every 12 hours.",
+    ],
+    [
+      "What do I need to play?",
+      "A phone and its web browser. Players must be 13 or older. To challenge friends, you verify your phone number once.",
+    ],
+    [
+      "Can I trade cards?",
+      "Not at launch. Matches are the only way cards change hands, so every card you win is one you earned.",
+    ],
+  ],
+};
