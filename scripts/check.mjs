@@ -152,7 +152,7 @@ if (base) {
 }
 // Keepsies is coming soon: nothing in the build may point at the game itself.
 if (!base) {
-  const banned = ["keepsies-game", "keepsies-qa", "vercel.app/keepsies"];
+  const banned = ["keepsies-game", "keepsies-qa", "keepsies.toyboxes.app", "vercel.app/keepsies"];
   for (const name of await readdir("dist", { recursive: true })) {
     const file = `dist/${name.replaceAll("\\", "/")}`;
     if (!/\.(html|js|css|xml|txt|json|svg)$/.test(file)) continue;
