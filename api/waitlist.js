@@ -1,17 +1,62 @@
-// The game waitlist. One private JSON blob per address and game, keyed by a
-// hash of the address, so signing up twice just replaces the first entry.
-// Works for a plain HTML form post (303 to a static page) and for fetch with
-// Accept: application/json (a JSON answer). Never log an address.
-import { createHash } from "node:crypto";
-import { put } from "@vercel/blob";
+// The game waitlist. Keepsies keeps its own waitlist: each signup is sent on to
+// the Keepsies server (POST /api/waitlist there, with WAITLIST_SECRET) and
+// nothing is stored here. Works for a plain HTML form post (303 to a static
+// page) and for fetch with Accept: application/json (a JSON answer). Never log
+// an address.
 
 const GAMES = new Set(["keepsies"]);
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_EMAIL = 254;
+const FORWARD_TIMEOUT_MS = 8000;
 const pages = {
   joined: (game) => `/games/${game}/joined/`,
   retry: (game) => `/games/${game}/try-again/`,
 };
+
+/**
+ * Where Keepsies takes signups: KEEPSIES_WAITLIST_URL when set, else Keepsies
+ * prod for this site's production and Keepsies QA for previews and development.
+ */
+export function keepsiesWaitlistUrl(env = process.env) {
+  if (env.KEEPSIES_WAITLIST_URL) return env.KEEPSIES_WAITLIST_URL;
+  return env.VERCEL_ENV === "production"
+    ? "https://keepsies.toyboxes.app/api/waitlist"
+    : "https://keepsies-qa.vercel.app/api/waitlist";
+}
+
+/**
+ * Sends one signup to Keepsies. Resolves "ok", "invalid_email" when Keepsies
+ * refuses the address, or "failed" for anything else (unreachable, a refusal,
+ * an answer that is not Keepsies' JSON).
+ */
+export async function sendToKeepsies(entry, { url = keepsiesWaitlistUrl(), secret = process.env.WAITLIST_SECRET } = {}) {
+  if (!secret) {
+    console.error("waitlist: WAITLIST_SECRET is not set");
+    return "failed";
+  }
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${secret}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(entry),
+      redirect: "error",
+      signal: AbortSignal.timeout(FORWARD_TIMEOUT_MS),
+    });
+    const result = String(response.headers.get("content-type") || "").includes("application/json")
+      ? await response.json().catch(() => null)
+      : null;
+    if (response.status === 200 && result?.ok === true) return "ok";
+    if (response.status === 400 && result?.error === "invalid_email") return "invalid_email";
+    console.error("waitlist: Keepsies did not take a signup", response.status, result?.error ?? "");
+  } catch (error) {
+    console.error("waitlist: could not reach Keepsies", error?.name);
+  }
+  return "failed";
+}
 
 function readBody(req) {
   // Vercel parses JSON and urlencoded bodies into req.body. Reading it throws
@@ -25,6 +70,12 @@ function readBody(req) {
 }
 
 const field = (body, name) => (typeof body[name] === "string" ? body[name] : "");
+
+const INVALID_EMAIL = {
+  ok: false,
+  error: "invalid_email",
+  message: "That email address does not look right. Check it and try again.",
+};
 
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
@@ -50,29 +101,11 @@ export default async function handler(req, res) {
   if (field(body, "website").trim()) return reply(200, { ok: true });
 
   const email = field(body, "email").trim();
-  if (!email || email.length > MAX_EMAIL || !EMAIL.test(email)) {
-    return reply(400, {
-      ok: false,
-      error: "invalid_email",
-      message: "That email address does not look right. Check it and try again.",
-    });
-  }
+  if (!email || email.length > MAX_EMAIL || !EMAIL.test(email)) return reply(400, INVALID_EMAIL);
 
-  const key = createHash("sha256").update(email.toLowerCase()).digest("hex");
-  const env = process.env.VERCEL_ENV || "development";
-  try {
-    await put(
-      `waitlist/${env}/${game}/${key}.json`,
-      JSON.stringify({ email, game, joinedAt: new Date().toISOString() }),
-      {
-        access: "private",
-        addRandomSuffix: false,
-        allowOverwrite: true,
-        contentType: "application/json",
-      },
-    );
-  } catch (error) {
-    console.error("waitlist: could not store a signup", error?.name, error?.message);
+  const sent = await sendToKeepsies({ email, game });
+  if (sent === "invalid_email") return reply(400, INVALID_EMAIL);
+  if (sent !== "ok") {
     return reply(500, {
       ok: false,
       error: "storage_failed",
