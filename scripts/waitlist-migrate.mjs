@@ -1,8 +1,11 @@
 // Move the Keepsies waitlist out of Vercel Blob, where api/waitlist.js used to
 // keep it, into Keepsies. Each signup is posted to the Keepsies waitlist with
-// its joinedAt, and its blob is deleted only after Keepsies answers ok. Prints
-// counts, never addresses. Safe to run again: Keepsies keeps the earliest
-// joinedAt, and blobs already moved are gone.
+// its joinedAt, and its blob is deleted only after Keepsies answers ok. A blob
+// that cannot be read, or that Keepsies refuses (a 400, like an address it
+// does not take), is kept and counted, and the run goes on. Anything else
+// (Keepsies unreachable, a 401, a 404, a 500) stops the run. Prints counts,
+// never addresses. Safe to run again: Keepsies keeps the earliest joinedAt,
+// and blobs already moved are gone.
 //
 //   vercel env pull .env.migrate --environment=development
 //   node --env-file=.env.migrate scripts/waitlist-migrate.mjs production --dry-run
@@ -15,13 +18,20 @@
 // BLOB_READ_WRITE_TOKEN and WAITLIST_SECRET.
 import { del, get, list } from "@vercel/blob";
 
-const args = process.argv.slice(2);
-const dryRun = args.includes("--dry-run");
-const [env = "production"] = args.filter((a) => !a.startsWith("--"));
-if (!["production", "preview", "development"].includes(env)) {
+const usage = () => {
   console.error("Usage: node scripts/waitlist-migrate.mjs [production|preview|development] [--dry-run]");
   process.exit(2);
+};
+const ENVS = ["production", "preview", "development"];
+let env;
+let dryRun = false;
+// Anything else, a misspelled --dry-run included, stops here before a blob is read.
+for (const arg of process.argv.slice(2)) {
+  if (arg === "--dry-run" && !dryRun) dryRun = true;
+  else if (ENVS.includes(arg) && !env) env = arg;
+  else usage();
 }
+env ??= "production";
 for (const name of ["BLOB_READ_WRITE_TOKEN", "WAITLIST_SECRET"]) {
   if (!process.env[name]) {
     console.error(`${name} is not set. Pull the development environment and pass --env-file (see the top of this file).`);
