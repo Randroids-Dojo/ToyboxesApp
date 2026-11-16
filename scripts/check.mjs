@@ -118,7 +118,7 @@ for (const path of routes) {
     if (href.includes("play.google.com/store/apps/details")) {
       const url = new URL(href);
       assert(
-        ["app.toyboxes.jokersrun", "app.toyboxes.perspectiveopus"].includes(
+        ["app.toyboxes.jokersrun", "app.toyboxes.perspectiveopus", "app.toyboxes.keepsies"].includes(
           url.searchParams.get("id"),
         ),
       );
@@ -150,38 +150,38 @@ if (base) {
   assert.equal(missing.status, 404, "Unknown routes return a real 404");
   assert((await missing.text()).includes("This box is empty."));
 }
-// Keepsies is coming soon: nothing in the build may point at the game itself.
+// Keepsies is out: only its public address may appear, never a QA or preview host.
 if (!base) {
-  const banned = ["keepsies-game", "keepsies-qa", "keepsies.toyboxes.app", "vercel.app/keepsies"];
+  const banned = ["keepsies-game", "keepsies-qa", "vercel.app/keepsies"];
   for (const name of await readdir("dist", { recursive: true })) {
     const file = `dist/${name.replaceAll("\\", "/")}`;
     if (!/\.(html|js|css|xml|txt|json|svg)$/.test(file)) continue;
     const text = await readFile(file, "utf8");
     for (const word of banned)
-      assert(!text.includes(word), `${file} must not link to the game (${word})`);
+      assert(!text.includes(word), `${file} must not link to a test build of the game (${word})`);
   }
-  console.log("PASS no links to the Keepsies game in dist");
+  console.log("PASS no links to Keepsies test builds in dist");
 }
 
-// The waitlist form posts to the function, works without JavaScript and lands on real pages.
-for (const path of ["/", "/games/keepsies/", "/games/keepsies/try-again/"]) {
+// The home page and the Keepsies page lead to the game: Play now, and the official Google Play badge.
+const badge =
+  /<a class="play-link" href="https:\/\/play\.google\.com\/store\/apps\/details\?id=app\.toyboxes\.keepsies&amp;[^"]*" aria-label="Get Keepsies on Google Play"><img src="\/assets\/google-play-badge\.png" width="646" height="250" alt="Get it on Google Play"><\/a>/;
+for (const path of ["/", "/games/keepsies/"]) {
   const html = await load(path);
-  const forms = html.match(/<form class="waitlist"[\s\S]*?<\/form>/g) || [];
-  assert(forms.length > 0, `${path}: waitlist form`);
-  for (const form of forms) {
-    assert(form.includes('action="/api/waitlist/" method="post"'), `${path}: form posts to /api/waitlist/`);
-    assert(/<input id="email-[a-z]+" name="email" type="email" required[^>]*autocomplete="email"/.test(form), `${path}: required email field`);
-    assert(form.includes('<input type="hidden" name="game" value="keepsies">'), `${path}: game field`);
-    assert(/name="website" type="text" tabindex="-1" autocomplete="off"/.test(form), `${path}: honeypot`);
-    assert(form.includes('href="/games/keepsies/waitlist-privacy/"'), `${path}: privacy link`);
-  }
+  assert(html.includes('<a class="k-play" href="https://keepsies.toyboxes.app/">Play now</a>'), `${path}: Play now link`);
+  assert(badge.test(html), `${path}: Google Play badge for Keepsies`);
+  assert(!/coming soon/i.test(html), `${path}: Keepsies is out, not coming soon`);
 }
+// The waitlist form is gone. api/waitlist.js stays for old pages that still post to it, and lands here.
+for (const path of [...routes, "/games/keepsies/joined/", "/games/keepsies/try-again/"])
+  assert(!(await load(path)).includes("<form"), `${path}: no waitlist form`);
 for (const path of ["/games/keepsies/joined/", "/games/keepsies/try-again/"]) {
   const html = await load(path);
   assert(html.includes('<meta name="robots" content="noindex">'), `${path}: noindex`);
+  assert(html.includes('href="https://keepsies.toyboxes.app/"'), `${path}: leads to the game`);
   assert(!(await load("/sitemap.xml")).includes(path), `${path}: not in the sitemap`);
 }
-console.log("PASS Keepsies waitlist form and result pages");
+console.log("PASS Keepsies play links and old waitlist landing pages");
 console.log(
   `PASS sitemap, robots.txt${base ? `, ${assets.size} live assets and real 404` : ""}.`,
 );

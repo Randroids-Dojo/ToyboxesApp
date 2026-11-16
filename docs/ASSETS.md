@@ -38,7 +38,7 @@ Full images are encoded as WebP at quality 86. The `-960.webp` images for both g
 
 ## Keepsies
 
-Keepsies is coming soon, so these images show the game without linking to it. Everything comes from the `Randroids-Dojo/Keepsies` repository or from real captures of its alpha build. No phone frame is drawn and no game UI is edited.
+Everything comes from the `Randroids-Dojo/Keepsies` repository or from real captures of its alpha build. No phone frame is drawn and no game UI is edited.
 
 The app icon is `web/public/icons/icon-512.png`.
 

@@ -162,18 +162,20 @@ export function playUrl(game, placement) {
 }
 
 /**
- * Keepsies is coming soon. It has its own page and a waitlist, and no link to
- * the game itself until it opens to everyone. Facts come from the game's own
- * design docs and the current alpha build. No em or en dashes in this copy.
+ * Keepsies is out: it plays in a web browser and as an Android app. Facts come
+ * from the game's own design docs and its captures. No em or en dashes in this
+ * copy.
  */
 export const keepsies = {
   slug: "keepsies",
   name: "Keepsies",
   fullName: "Keepsies: Collect & Battle",
+  package: "app.toyboxes.keepsies",
+  browser: "https://keepsies.toyboxes.app/",
   genre: "Collectible card game",
-  title: "Keepsies: A Card Game Played for Keeps, Coming Soon | Toyboxes",
+  title: "Keepsies: A Card Game Played for Keeps | Toyboxes",
   description:
-    "Rip open packs of numbered animal cards, put three on the line against a friend and take one of theirs for keeps. Keepsies is coming soon. Join the waitlist.",
+    "Rip open packs of numbered animal cards, put three on the line against a friend and take one of theirs for keeps. Play now in your browser or get it on Google Play.",
   hook: "Play for keeps.",
   icon: "icon-512.png",
   // Real card faces from the game, fanned out of the sealed pack. [file, alt]
@@ -184,7 +186,7 @@ export const keepsies = {
     ["card-snow-leopard-cub", "Snow Leopard Cub, a blue ultra rare card with power 85."],
     ["card-panda-cub", "Panda Cub, a blue ultra rare card with power 79."],
   ],
-  facts: ["Free in alpha", "100 animals plus 20 secret rares", "Made for your phone"],
+  facts: ["Free on the web", "100 animals plus 20 secret rares", "Made for your phone"],
   // Trailer beats for the game page: [id, heading, lines, shots [file, caption, alt]]
   beats: [
     [
@@ -246,16 +248,16 @@ export const keepsies = {
   ],
   faqs: [
     [
-      "When does Keepsies open?",
-      "There is no date yet. Keepsies is in alpha and changing fast. Join the waitlist and we will email you when it opens.",
+      "Where can I play?",
+      "In your web browser at keepsies.toyboxes.app, or in the Android app from Google Play.",
     ],
     [
       "Is it free?",
-      "Yes. Keepsies is free to play in alpha, with a free pack every 12 hours.",
+      "On the web, yes, with a free pack every 12 hours. The Android app is a paid download on Google Play.",
     ],
     [
       "What do I need to play?",
-      "A phone and its web browser. Players must be 13 or older. To challenge friends, you verify your phone number once.",
+      "A phone and its web browser, or the Android app. Players must be 13 or older. To challenge friends, you verify your phone number once.",
     ],
     [
       "Can I trade cards?",
