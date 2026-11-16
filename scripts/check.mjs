@@ -81,8 +81,8 @@ for (const path of routes) {
           (node) =>
             node["@type"]?.includes("VideoGame") &&
             (node.operatingSystem === "Android" ||
-              (node["@type"].includes("WebApplication") &&
-                node.isAccessibleForFree === true)),
+              node["@type"].includes("WebApplication")) &&
+            node.isAccessibleForFree === false,
         ),
       );
     }
@@ -171,6 +171,8 @@ for (const path of ["/", "/games/keepsies/"]) {
   assert(html.includes('<a class="k-play" href="https://keepsies.toyboxes.app/">Play now</a>'), `${path}: Play now link`);
   assert(badge.test(html), `${path}: Google Play badge for Keepsies`);
   assert(!/coming soon/i.test(html), `${path}: Keepsies is out, not coming soon`);
+  // Toyboxes games are bought once. No page calls Keepsies free.
+  assert(!/\bfree\b/i.test(html), `${path}: never calls a game free`);
 }
 // The waitlist form is gone. api/waitlist.js stays for old pages that still post to it, and lands here.
 for (const path of [...routes, "/games/keepsies/joined/", "/games/keepsies/try-again/"])
@@ -181,6 +183,10 @@ for (const path of ["/games/keepsies/joined/", "/games/keepsies/try-again/"]) {
   assert(html.includes('href="https://keepsies.toyboxes.app/"'), `${path}: leads to the game`);
   assert(!(await load("/sitemap.xml")).includes(path), `${path}: not in the sitemap`);
 }
+assert(
+  (await load("/games/keepsies/")).includes('<p class="purchase-note">Buy once. No ads or in-app purchases.</p>'),
+  "/games/keepsies/: the buy once promise under the badge",
+);
 console.log("PASS Keepsies play links and old waitlist landing pages");
 console.log(
   `PASS sitemap, robots.txt${base ? `, ${assets.size} live assets and real 404` : ""}.`,
