@@ -175,7 +175,7 @@ export const keepsies = {
   genre: "Collectible card game",
   title: "Keepsies: A Card Game Played for Keeps | Toyboxes",
   description:
-    "Rip open packs of numbered animal cards, put three on the line against a friend and take one of theirs for keeps. Try it now on the web or get it on Google Play. Buy once. No ads or in-app purchases.",
+    "Rip open packs of numbered animal cards, put three on the line against a friend and take one of theirs for keeps. Try it now on the web or get it on Google Play. Set 1 is yours to keep. Pay once for every set to come.",
   hook: "Play for keeps.",
   icon: "icon-512.png",
   // Real card faces from the game, fanned out of the sealed pack. [file, alt]
@@ -253,7 +253,7 @@ export const keepsies = {
     ],
     [
       "Are there ads or in-app purchases?",
-      "No. Buy Keepsies once, with no ads or in-app purchases. Google Play shows the current price for your region.",
+      "No ads, and nothing else to buy. Set 1 is yours to keep. Pay once for every set to come.",
     ],
     [
       "What do I need to play?",
