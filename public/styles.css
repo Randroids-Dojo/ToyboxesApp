@@ -1268,6 +1268,11 @@ main:focus {
   color: #0d0620;
   background: #ffe08f;
 }
+.keepsies-band .purchase-note {
+  font-size: 14px;
+  margin-top: 16px;
+  color: var(--k-muted);
+}
 .k-play:active {
   transform: translateY(2px);
   box-shadow: 0 1px 0 var(--ink);

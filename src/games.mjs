@@ -175,7 +175,7 @@ export const keepsies = {
   genre: "Collectible card game",
   title: "Keepsies: A Card Game Played for Keeps | Toyboxes",
   description:
-    "Rip open packs of numbered animal cards, put three on the line against a friend and take one of theirs for keeps. Play now in your browser or get it on Google Play.",
+    "Rip open packs of numbered animal cards, put three on the line against a friend and take one of theirs for keeps. Try it now on the web or get it on Google Play. Buy once. No ads or in-app purchases.",
   hook: "Play for keeps.",
   icon: "icon-512.png",
   // Real card faces from the game, fanned out of the sealed pack. [file, alt]
@@ -186,7 +186,7 @@ export const keepsies = {
     ["card-snow-leopard-cub", "Snow Leopard Cub, a blue ultra rare card with power 85."],
     ["card-panda-cub", "Panda Cub, a blue ultra rare card with power 79."],
   ],
-  facts: ["Free on the web", "100 animals plus 20 secret rares", "Made for your phone"],
+  facts: ["100 animals plus 20 secret rares", "Made for your phone"],
   // Trailer beats for the game page: [id, heading, lines, shots [file, caption, alt]]
   beats: [
     [
@@ -252,8 +252,8 @@ export const keepsies = {
       "In your web browser at keepsies.toyboxes.app, or in the Android app from Google Play.",
     ],
     [
-      "Is it free?",
-      "On the web, yes, with a free pack every 12 hours. The Android app is a paid download on Google Play.",
+      "Are there ads or in-app purchases?",
+      "No. Buy Keepsies once, with no ads or in-app purchases. Google Play shows the current price for your region.",
     ],
     [
       "What do I need to play?",
