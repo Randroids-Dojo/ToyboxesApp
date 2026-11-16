@@ -1093,9 +1093,7 @@ main:focus {
 .keepsies-band a:hover {
   color: var(--k-gold);
 }
-.keepsies-band a:focus-visible,
-.keepsies-band button:focus-visible,
-.keepsies-band input:focus-visible {
+.keepsies-band a:focus-visible {
   outline-color: var(--k-gold);
 }
 .k-head {
@@ -1156,7 +1154,7 @@ main:focus {
 }
 .k-inside {
   display: inline-block;
-  margin-top: 4px;
+  margin-top: 26px;
   font-weight: 700;
   font-size: 17px;
 }
@@ -1236,102 +1234,43 @@ main:focus {
     transform: translateX(-50%) translate(var(--x), calc(var(--y) - 4%)) rotate(var(--r));
   }
 }
-/* The waitlist form */
-.waitlist {
-  margin-top: 26px;
-  max-width: 500px;
-}
-.waitlist-label {
-  display: block;
-  font-weight: 700;
-  font-size: 16px;
-  margin-bottom: 8px;
-}
-.waitlist-row {
+/* Where to play: a Play now button beside the Google Play badge */
+.k-actions {
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 22px 26px;
+  margin-top: 26px;
 }
-.waitlist input[type="email"] {
-  flex: 1 1 auto;
-  min-width: 0;
-  min-height: 54px;
-  padding: 12px 16px;
-  font: inherit;
-  font-size: 18px;
-  color: var(--ink);
-  background: var(--white);
-  border: 2px solid var(--ink);
-  border-radius: 10px;
-}
-.waitlist button {
-  flex-shrink: 0;
-  min-height: 54px;
-  padding: 12px 20px;
+.k-play {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 58px;
+  padding: 12px 30px;
   font-weight: 750;
-  font-size: 17px;
+  font-size: 19px;
+  text-decoration: none;
   color: var(--ink);
   background: var(--yellow);
   border: 2px solid var(--ink);
   border-radius: 10px;
   box-shadow: 0 3px 0 var(--ink);
-  cursor: pointer;
 }
-.keepsies-band .waitlist button {
+.keepsies-band .k-play {
+  color: #0d0620;
   background: var(--k-gold);
   border-color: #0d0620;
   box-shadow: 0 4px 0 #0d0620;
 }
-.waitlist button:hover,
-.keepsies-band .waitlist button:hover {
+.k-play:hover,
+.keepsies-band .k-play:hover {
+  color: #0d0620;
   background: #ffe08f;
 }
-.waitlist button:active {
+.k-play:active {
   transform: translateY(2px);
   box-shadow: 0 1px 0 var(--ink);
-}
-.waitlist button[disabled] {
-  cursor: progress;
-  opacity: 0.8;
-}
-.waitlist-status {
-  min-height: 1.5em;
-  margin-top: 8px;
-  font-weight: 700;
-  font-size: 17px;
-}
-.waitlist-status:focus {
-  outline: none;
-}
-.waitlist-status[data-state="ok"] {
-  color: #1d6b41;
-}
-.waitlist-status[data-state="error"] {
-  color: #b3261e;
-}
-.keepsies-band .waitlist-status[data-state="ok"] {
-  color: #9ff0bd;
-}
-.keepsies-band .waitlist-status[data-state="error"] {
-  color: #ffb4a8;
-}
-.waitlist-note {
-  font-size: 15px;
-  color: var(--muted);
-  margin-top: 12px;
-}
-.keepsies-band .waitlist-note {
-  color: var(--k-muted);
-}
-.waitlist-note a {
-  font-weight: 700;
-  white-space: nowrap;
-}
-.waitlist-hp {
-  position: absolute;
-  left: -10000px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
 }
 /* The Keepsies page */
 .k-hero {
@@ -1394,8 +1333,8 @@ main:focus {
   font-size: 34px;
   margin-bottom: 14px;
 }
-.k-join .waitlist {
-  margin-top: 18px;
+.k-join .k-actions {
+  margin-block: 18px 22px;
 }
 .k-ask {
   font-size: 16px;
@@ -1404,9 +1343,6 @@ main:focus {
 .k-result img {
   border-radius: 20px;
   margin-bottom: 24px;
-}
-.k-retry .waitlist {
-  margin-block: 10px 26px;
 }
 @media (max-width: 1000px) {
   .keepsies-band {
@@ -1440,12 +1376,6 @@ main:focus {
   .k-lines {
     font-size: 19px;
     margin-top: 0;
-  }
-  .waitlist-row {
-    flex-direction: column;
-  }
-  .waitlist button {
-    width: 100%;
   }
   .k-beat,
   .k-beat:nth-child(even) {

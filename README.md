@@ -4,7 +4,7 @@ The mobile games homepage at **https://toyboxes.app**. Published by Toyboxes / R
 
 - [Joker's Run](https://toyboxes.app/games/jokers-run/): offline arcade air combat for Android, built around one replayable mission.
 - [Perspective Opus](https://toyboxes.app/games/perspective-opus/): a musical puzzle platformer with seamless 2D/3D switching.
-- [Keepsies](https://toyboxes.app/games/keepsies/): a card game played for keeps, coming soon, with a waitlist.
+- [Keepsies](https://toyboxes.app/games/keepsies/): a card game played for keeps, on the web and on Android.
 - [Support](https://toyboxes.app/support/) and [website privacy](https://toyboxes.app/privacy/).
 
 The interactive town remains at **https://toyboxes.games**, maintained in the separate [Toyboxes repository](https://github.com/Randroids-Dojo/Toyboxes).
@@ -24,11 +24,11 @@ Open http://localhost:5218. Rebuild after editing templates or content. `npm run
 
 ## Editing
 
-- `src/games.mjs`: game descriptions, features, screenshots, FAQs, support URLs and campaign-tagged Play links. `keepsies` holds the coming-soon page's copy, card fan and captures.
+- `src/games.mjs`: game descriptions, features, screenshots, FAQs, support URLs and campaign-tagged Play links. `keepsies` holds the Keepsies page's copy, card fan and captures.
 - `scripts/build.mjs`: shared HTML templates, metadata, structured data, robots and sitemap generation.
 - `public/styles.css`: responsive styling and self-hosted fonts.
-- `public/site.js`: progressive enhancement for the 2D/3D screenshot comparison and the waitlist form. All essential content works without it.
-- `api/waitlist.js`: the waitlist Vercel Function (see below).
+- `public/site.js`: progressive enhancement for the 2D/3D screenshot comparison. All essential content works without it.
+- `api/waitlist.js`: the old waitlist Vercel Function, kept for pages that still post to it (see below).
 - `docs/ASSETS.md`: image provenance and licenses.
 - `docs/DISCOVERY.md`: discovery setup and measurement follow-up.
 
@@ -36,11 +36,11 @@ Do not add a game to the catalog until its package identity, public listing, cla
 
 ## Keepsies waitlist
 
-Keepsies is coming soon. The site must not link to the game until it opens: `npm run check` fails if anything in `dist` names the game's own hosts (the list is in `scripts/check.mjs`). The waitlist function posting to Keepsies from the server is not a link, and `api/` is not part of `dist`.
+Keepsies is out. The home page and `/games/keepsies/` link to the game at `https://keepsies.toyboxes.app/` and carry the Google Play badge for `app.toyboxes.keepsies`. `npm run check` fails if either link is missing, if a page has a form, or if anything in `dist` names a QA or preview host of the game (the list is in `scripts/check.mjs`).
 
-The form on the home page and `/games/keepsies/` posts to `/api/waitlist/` (`api/waitlist.js`). The function keeps nothing: it sends each signup on to Keepsies, server to server, as JSON `{ email, game }` with `Authorization: Bearer <WAITLIST_SECRET>`. Keepsies keeps the waitlist in its own database, one row per lowercased address, and the owner invites from Keepsies' `/admin/waitlist` (see the Keepsies repo, `web/README.md`, The waitlist). Production posts to `https://keepsies.toyboxes.app/api/waitlist`; previews and development post to `https://keepsies-qa.vercel.app/api/waitlist`. `KEEPSIES_WAITLIST_URL` overrides either.
+The waitlist form is gone from the site. `api/waitlist.js` stays at `/api/waitlist/`, with nothing linking to it, so an old copy of a page that still posts to it works. The function keeps nothing: it sends each signup on to Keepsies, server to server, as JSON `{ email, game }` with `Authorization: Bearer <WAITLIST_SECRET>`. Keepsies keeps the waitlist in its own database, one row per lowercased address, and the owner invites from Keepsies' `/admin/waitlist` (see the Keepsies repo, `web/README.md`, The waitlist). Production posts to `https://keepsies.toyboxes.app/api/waitlist`; previews and development post to `https://keepsies-qa.vercel.app/api/waitlist`. `KEEPSIES_WAITLIST_URL` overrides either.
 
-A plain form post is redirected (303) to `/games/keepsies/joined/` once Keepsies answers ok, and to `/games/keepsies/try-again/` when the address looks wrong, Keepsies refuses it, or Keepsies cannot be reached in 8 seconds. A request with `Accept: application/json` gets JSON. A filled honeypot field (`website`) gets a success answer and sends nothing. The function never logs addresses. What is kept and why is in `/games/keepsies/waitlist-privacy/`.
+A plain form post is redirected (303) to `/games/keepsies/joined/` once Keepsies answers ok, and to `/games/keepsies/try-again/` when the address looks wrong, Keepsies refuses it, or Keepsies cannot be reached in 8 seconds. Both pages now say Keepsies is out and lead to the game. A request with `Accept: application/json` gets JSON. A filled honeypot field (`website`) gets a success answer and sends nothing. The function never logs addresses. What is kept and why is in `/games/keepsies/waitlist-privacy/`.
 
 | Name | Where | What |
 | --- | --- | --- |
