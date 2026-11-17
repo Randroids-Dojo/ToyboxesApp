@@ -71,3 +71,7 @@ Captured on November 11, 2026 (America/Chicago) from the Keepsies QA build, main
 | lineup.webp | The practice bot lineup with Pygmy Hippo Calf, Cheetah Cub and Pallas's Cat in rounds 1 to 3 |
 | color-defense.webp | Round 1 against the practice bot: Red beats Yellow, the coached color defense explainer |
 | pick-one.webp | Pick your prize: the practice bot's three cards face down after the tutorial win |
+
+### Music video still
+
+`music-video.webp` (1280x720, quality 82) and `music-video-640.webp` (640x360, quality 80) are the YouTube thumbnail of the Keepsies music video "I Made a Game on My Phone (Keepsies Official Music Video)" (video `ZikJ0NrjAEE` on Randroid's Dojo, uploaded November 16, 2026), downloaded on November 16, 2026 from `https://i.ytimg.com/vi/ZikJ0NrjAEE/maxresdefault.jpg` (1280x720 JPEG, SHA-256 `9e1dcf03118c550a656b0dcde5085ac1c95d19ab850e1b8c1f15ca12819a978b`) and converted with ffmpeg. Nothing is cropped or edited. It is kept on this site so the page loads nothing from YouTube until the video is played.

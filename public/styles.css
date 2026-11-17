@@ -1158,6 +1158,15 @@ main:focus {
   font-weight: 700;
   font-size: 17px;
 }
+.k-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  margin-top: 26px;
+}
+.k-links .k-inside {
+  margin-top: 0;
+}
 .k-inside::after {
   content: " →";
 }
@@ -1281,6 +1290,83 @@ main:focus {
 .k-hero {
   margin-bottom: 30px;
 }
+/* The music video: a still in a thick ink frame with a gold play button, swapped for the player on press. */
+.k-video {
+  max-width: 1010px;
+  padding-block: 40px 20px;
+  text-align: center;
+}
+.k-video-kicker {
+  max-width: none;
+  font-weight: 750;
+  font-size: 16px;
+  letter-spacing: 0.4px;
+  color: var(--muted);
+}
+.k-video h2 {
+  font-size: clamp(36px, 4vw, 52px);
+  margin-block: 6px 26px;
+}
+.k-video-frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  border: 3px solid var(--ink);
+  border-radius: 24px;
+  box-shadow: 9px 9px 0 #ccddec;
+  background: #1b0e31;
+  overflow: hidden;
+}
+.k-video-frame img,
+.k-video-frame iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.k-video-frame img {
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+.k-video-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: clamp(64px, 11vw, 96px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #ffd166;
+  border: 3px solid #0d0620;
+  box-shadow: 0 5px 0 #0d0620;
+  transition: transform 0.15s ease;
+}
+.k-video-play::after {
+  /* The play triangle, nudged right so it looks centered. */
+  content: "";
+  position: absolute;
+  left: 54%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-style: solid;
+  border-width: 0.9em 0 0.9em 1.5em;
+  border-color: transparent transparent transparent #0d0620;
+  font-size: clamp(14px, 2.4vw, 21px);
+}
+.k-video-frame:hover img {
+  transform: scale(1.02);
+}
+.k-video-frame:hover .k-video-play {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+.k-video-frame:active .k-video-play {
+  transform: translate(-50%, calc(-50% + 3px));
+  box-shadow: 0 2px 0 #0d0620;
+}
+.k-video-frame:focus-visible {
+  outline: 4px solid var(--blue);
+  outline-offset: 4px;
+}
 .k-beats {
   padding-block: 40px 30px;
 }
@@ -1402,6 +1488,16 @@ main:focus {
   }
   .k-beat-1 .k-shots figure {
     width: min(250px, 62%);
+  }
+  .k-video {
+    padding-block: 26px 10px;
+  }
+  .k-video h2 {
+    margin-bottom: 20px;
+  }
+  .k-video-frame {
+    border-radius: 18px;
+    box-shadow: 6px 6px 0 #ccddec;
   }
 }
 @media (prefers-reduced-motion: reduce) {

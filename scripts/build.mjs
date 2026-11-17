@@ -37,7 +37,27 @@ const kActions = (placement) =>
   `<div class="k-actions"><a class="k-play" href="${K.browser}">Play now</a>${play(K, placement)}</div>`;
 const kFacts = `<ul class="k-facts">${K.facts.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>`;
 const keepsiesBand = () =>
-  `<section class="keepsies-band wrap" id="keepsies" aria-labelledby="keepsies-heading"><div class="k-head"><p class="k-eyebrow"><img src="${kAsset(K.icon)}" width="44" height="44" alt="">New from Toyboxes</p><h2 id="keepsies-heading"><a href="${kPath}">Keepsies</a></h2><p class="k-hook">${esc(K.hook)}</p></div>${cardFan({ eager: true })}<div class="k-body"><p class="k-lines">Rip open packs of numbered animal cards. Put three on the line against a friend. Win, and take one of theirs.</p>${kFacts}${kActions("home")}<a class="k-inside" href="${kPath}">See what’s inside Keepsies</a></div></section>`;
+  `<section class="keepsies-band wrap" id="keepsies" aria-labelledby="keepsies-heading"><div class="k-head"><p class="k-eyebrow"><img src="${kAsset(K.icon)}" width="44" height="44" alt="">New from Toyboxes</p><h2 id="keepsies-heading"><a href="${kPath}">Keepsies</a></h2><p class="k-hook">${esc(K.hook)}</p></div>${cardFan({ eager: true })}<div class="k-body"><p class="k-lines">Rip open packs of numbered animal cards. Put three on the line against a friend. Win, and take one of theirs.</p>${kFacts}${kActions("home")}<p class="k-links"><a class="k-inside" href="${kPath}">See what’s inside Keepsies</a><a class="k-inside" href="${kPath}#music-video">Watch the music video</a></p></div></section>`;
+/**
+ * The launch music video. Without JavaScript it is a link to YouTube around a still kept on this site;
+ * site.js swaps in YouTube's privacy-enhanced player when it is pressed. Nothing loads from YouTube before that.
+ */
+const kVideoUrl = `https://www.youtube.com/watch?v=${K.video.id}`;
+const kVideo = () =>
+  `<section class="k-video wrap" id="music-video" aria-labelledby="video-heading"><p class="k-video-kicker">The Keepsies music video</p><h2 id="video-heading">${esc(K.video.title)}</h2><a class="k-video-frame" href="${kVideoUrl}" data-video="${K.video.id}" data-title="${esc(K.video.youtubeTitle)}" aria-label="Play ${esc(K.video.youtubeTitle)}"><img src="${kAsset("music-video-640.webp")}" srcset="${kAsset("music-video-640.webp")} 640w, ${kAsset("music-video.webp")} 1280w" sizes="(min-width: 1100px) 960px, 92vw" width="1280" height="720" alt="${esc(K.video.alt)}" loading="lazy" decoding="async"><span class="k-video-play" aria-hidden="true"></span></a></section>`;
+const kVideoSchema = {
+  "@type": "VideoObject",
+  "@id": `${site}${kPath}#music-video`,
+  name: K.video.youtubeTitle,
+  description: "The official music video for Keepsies, a card game played for keeps.",
+  thumbnailUrl: `${site}${kAsset("music-video.webp")}`,
+  uploadDate: K.video.uploaded,
+  duration: K.video.duration,
+  url: kVideoUrl,
+  embedUrl: `https://www.youtube.com/embed/${K.video.id}`,
+  about: { "@id": `${site}${kPath}#game` },
+  publisher: { "@id": `${site}/#organization` },
+};
 const kSchema = {
   "@type": ["VideoGame", "WebApplication"],
   "@id": `${site}${kPath}#game`,
@@ -246,6 +266,7 @@ pages.set(
     bodyClass: "game-page keepsies-page",
     schema: [
       kSchema,
+      kVideoSchema,
       {
         "@type": "BreadcrumbList",
         itemListElement: [
@@ -256,6 +277,7 @@ pages.set(
     ],
     content: `<div class="wrap"><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Our games</a><span aria-hidden="true">/</span><span aria-current="page">${esc(K.name)}</span></nav></div>
     <section class="keepsies-band k-hero wrap" aria-labelledby="keepsies-title"><div class="k-head"><p class="k-eyebrow"><img src="${kAsset(K.icon)}" width="44" height="44" alt="">Out now. Try it on the web.</p><h1 id="keepsies-title">${esc(K.name)}<span>Collect &amp; Battle</span></h1><p class="k-hook">${esc(K.hook)}</p></div>${cardFan({ eager: true })}<div class="k-body"><p class="k-lines">A card game you play for keeps. Rip open packs of numbered animal cards. Put three on the line against a friend. Win, and take one of theirs.</p>${kFacts}${kActions("hero")}<p class="purchase-note">Set 1 is yours to keep. Pay once for every set to come.</p></div></section>
+    ${kVideo()}
     <div class="k-beats wrap">${K.beats.map(kBeat).join("")}</div>
     <section class="details-section wrap"><div class="faq"><h2>Before you play</h2>${K.faqs.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}</div><div class="k-join"><h2 id="join-heading">Get in on the first print.</h2>${kActions("details")}<p class="k-ask">Questions? Email <a href="mailto:support@toyboxes.app?subject=Keepsies">support@toyboxes.app</a>.</p></div></section>
     <aside class="other-game wrap"><div><p>More little worlds to explore</p><h2><a href="/#games">Our Android games</a></h2><p>${games.map((g) => esc(g.name)).join(" and ")}</p></div><a class="button secondary" href="/#games">See our games</a></aside>`,
@@ -312,7 +334,7 @@ pages.set(
     title: "Toyboxes Website Privacy | toyboxes.app",
     description:
       "How the Toyboxes website handles web requests and support email, plus links to the privacy policies for Joker’s Run and Perspective Opus on Android.",
-    content: `<section class="prose wrap"><h1>Privacy</h1><p class="lead">The Toyboxes website and our Android games.</p><p>This website is published by Randroid LLC. Updated November 15, 2026.</p><h2>This website</h2><p>You can browse toyboxes.app without creating an account. We do not add advertising, analytics scripts or tracking cookies. Our hosting provider, Vercel, processes ordinary web requests, which may include your IP address, browser information and the pages requested, to serve and secure the site.</p><p>Google Play links contain campaign labels identifying this website, the game and the link’s placement. These labels contain no personal identifier. When you follow an external link, that service’s own privacy practices apply.</p><h2>Support email</h2><p>If you email support@toyboxes.app, we receive your email address and the information you choose to send, and use them to respond to your request. Please do not send passwords or payment details.</p><h2>Keepsies waitlist</h2><p>If you joined the Keepsies waitlist, this website passed your email address to Keepsies, which keeps it and the time you joined, privately, to invite you. We never sell or share it. It is kept until you are invited and deleted 30 days after the invite, or sooner if you ask support@toyboxes.app. Read the <a href="${waitlistPrivacy}">Keepsies waitlist privacy note</a>.</p><h2>Android game policies</h2><p>The Android games have their own privacy policies. Read the policy for your game:</p><ul>${games.map((g) => `<li><a href="${g.privacy}">${esc(g.name)} privacy policy</a></li>`).join("")}</ul><h2>Contact</h2><p>For privacy questions, email <a href="mailto:support@toyboxes.app">support@toyboxes.app</a>.</p></section>`,
+    content: `<section class="prose wrap"><h1>Privacy</h1><p class="lead">The Toyboxes website and our Android games.</p><p>This website is published by Randroid LLC. Updated November 16, 2026.</p><h2>This website</h2><p>You can browse toyboxes.app without creating an account. We do not add advertising, analytics scripts or tracking cookies. Our hosting provider, Vercel, processes ordinary web requests, which may include your IP address, browser information and the pages requested, to serve and secure the site.</p><h2>The Keepsies music video</h2><p>The Keepsies page shows a still from our music video, stored on this site. Nothing loads from YouTube until you press play. Then the video plays from YouTube in its privacy-enhanced mode, YouTube may store data on your device, and Google’s privacy policy applies.</p><p>Google Play links contain campaign labels identifying this website, the game and the link’s placement. These labels contain no personal identifier. When you follow an external link, that service’s own privacy practices apply.</p><h2>Support email</h2><p>If you email support@toyboxes.app, we receive your email address and the information you choose to send, and use them to respond to your request. Please do not send passwords or payment details.</p><h2>Keepsies waitlist</h2><p>If you joined the Keepsies waitlist, this website passed your email address to Keepsies, which keeps it and the time you joined, privately, to invite you. We never sell or share it. It is kept until you are invited and deleted 30 days after the invite, or sooner if you ask support@toyboxes.app. Read the <a href="${waitlistPrivacy}">Keepsies waitlist privacy note</a>.</p><h2>Android game policies</h2><p>The Android games have their own privacy policies. Read the policy for your game:</p><ul>${games.map((g) => `<li><a href="${g.privacy}">${esc(g.name)} privacy policy</a></li>`).join("")}</ul><h2>Contact</h2><p>For privacy questions, email <a href="mailto:support@toyboxes.app">support@toyboxes.app</a>.</p></section>`,
   }),
 );
 
