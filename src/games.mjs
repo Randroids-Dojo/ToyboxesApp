@@ -178,6 +178,15 @@ export const keepsies = {
     "Rip open packs of numbered animal cards, put three on the line against a friend and take one of theirs for keeps. Try it now on the web or get it on Google Play. Set 1 is yours to keep. Pay once for every set to come.",
   hook: "Play for keeps.",
   icon: "icon-512.png",
+  // The launch music video on Randroid's Dojo. The page shows its YouTube thumbnail, kept on this site.
+  video: {
+    id: "ZikJ0NrjAEE",
+    title: "I Made a Game on My Phone",
+    youtubeTitle: "I Made a Game on My Phone (Keepsies Official Music Video)",
+    uploaded: "2026-11-16T17:19:43-08:00",
+    duration: "PT3M6S",
+    alt: "The video's title card: NOT A SQUIRREL over a knitted orange creature with big eyes, a curled tail and a second smiling face, on a purple stage while clay fans cheer.",
+  },
   // Real card faces from the game, fanned out of the sealed pack. [file, alt]
   fan: [
     ["card-red-panda-cub", "Red Panda Cub, a red rare card with power 58."],

@@ -187,6 +187,19 @@ assert(
   (await load("/games/keepsies/")).includes('<p class="purchase-note">Set 1 is yours to keep. Pay once for every set to come.</p>'),
   "/games/keepsies/: the pay once promise under the badge",
 );
+// The music video: a plain link to YouTube around a local still. No player, and nothing from YouTube, until pressed.
+{
+  const html = await load("/games/keepsies/");
+  assert(html.includes('id="music-video"'), "/games/keepsies/: the music video section");
+  assert(html.includes('<a class="k-video-frame" href="https://www.youtube.com/watch?v=ZikJ0NrjAEE"'), "/games/keepsies/: the video links to YouTube");
+  for (const path of routes) {
+    const page = await load(path);
+    assert(!page.includes("<iframe"), `${path}: no embedded player in the HTML`);
+    assert(!/src="https:\/\/[^"]*(youtube|ytimg)/.test(page), `${path}: nothing loads from YouTube before play`);
+  }
+  assert((await load("/privacy/")).includes("Nothing loads from YouTube until you press play."), "/privacy/: the video is documented");
+  console.log("PASS the music video waits for a press");
+}
 console.log("PASS Keepsies play links and old waitlist landing pages");
 console.log(
   `PASS sitemap, robots.txt${base ? `, ${assets.size} live assets and real 404` : ""}.`,
